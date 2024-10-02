@@ -4,13 +4,15 @@ The Tensorflow Reimplementation based the [Practical Deep Raw Image Denoising on
 
 Note: Istead of training with RGGB pattern, input of this mode is noisy sRGB image.
 
-##  Content
-- [Practical Deep Raw Image Denoising on Mobile Devices](#practical-deep-raw-image-denoising-on-mobile-devices)
-  - [Content](#content)
+## Content
+  - [Install](#install)
   - [Getting Started](#getting-started)
   - [Running](#running)
     - [Result](#result)
   - [References](#references)
+
+## Install
+In a virtual environment, install all the necessary packages and libraries by running pip install -r requirements.txt at the root directory
 
 ## Getting Started
 

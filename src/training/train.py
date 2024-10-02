@@ -1,6 +1,6 @@
-from model import DenoiseNetwork
+from Denoising.model import DenoiseNetwork
 import tensorflow as tf
-from preprocess import preprocess_data
+from Denoising.preprocess import preprocess_data
 import argparse 
 import os
 

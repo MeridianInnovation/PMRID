@@ -1,5 +1,5 @@
-from model import DenoiseNetwork
-from preprocess import load_image
+from Denoising.model import DenoiseNetwork
+from Denoising.preprocess import load_image
 import tensorflow as tf
 import argparse
 import os
