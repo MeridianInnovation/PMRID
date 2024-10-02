@@ -57,7 +57,7 @@ class DenoiseNetwork(tf.keras.Model):
     super(DenoiseNetwork, self).__init__()
 
     # Input stage
-    self.input_stage = tf.keras.layers.Conv2D(16, (3,3), padding="same", input_shape=(512,512,3))
+    self.input_stage = tf.keras.layers.Conv2D(16, (3,3), padding="same", input_shape=(160,120,1))
 
     # Encoder Stage 1
     self.encoder_stage1 = tf.keras.Sequential([
@@ -118,7 +118,7 @@ class DenoiseNetwork(tf.keras.Model):
     # Output Stage
     self.output_stage = tf.keras.Sequential([
         Decoder(16),
-        tf.keras.layers.Conv2D(3, kernel_size=(3,3), padding='same')
+        tf.keras.layers.Conv2D(1, kernel_size=(3,3), padding='same')
     ])
 
   def call(self, input):
