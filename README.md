@@ -1,9 +1,7 @@
 # Practical Deep Raw Image Denoising on Mobile Devices
-
 The Tensorflow Reimplementation based the [Practical Deep Raw Image Denoising on Mobile Devices - ECCV 2020](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
 
-Note: Istead of training with RGGB pattern, input of this mode is noisy sRGB image.
-
+We will modify based on the implementation here.
 ## Content
   - [Install](#install)
   - [Getting Started](#getting-started)
