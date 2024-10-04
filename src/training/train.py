@@ -39,6 +39,7 @@ def train():
 
     # Build Model (required for subclassed models)
     model.build(input_shape=(None, 160, 120, 1))
+    model.summary()
 
     # Load Pre-trained Weights if Provided
     if args.pretrain_dir:
