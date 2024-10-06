@@ -19,7 +19,7 @@ In a virtual environment, install all the necessary packages and libraries by ru
 ## Running
 
 - Creating Data
-  - Clone the repository [CycleISP](https://github.com/swz30/CycleISP) to generate pairs clean and noisy image.
+  - Clone the repository [CycleISP](https://github.com/swz30/CycleISP) to generate pairs clean and noisy images.
 
   ```
   python generate_rgb_data.py --input_dir <path to clean images folder> --result_dir <path to output>
