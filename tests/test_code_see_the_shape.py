@@ -12,7 +12,7 @@ sys.path.insert(0, project_root)
 # # Print the updated sys.path for debugging
 # print(sys.path)
 
-from src.models.model import DenoiseNetwork
+from src.model.model import DenoiseNetwork
 
 
 # Instantiate the model

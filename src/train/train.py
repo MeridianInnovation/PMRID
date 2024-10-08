@@ -3,7 +3,7 @@
 import argparse
 import os
 import tensorflow as tf
-from src.models.model import DenoiseNetwork
+from src.model.model import DenoiseNetwork
 from src.data.data_utils import load_dataset
 from src.utils.utils import loss_function
 
