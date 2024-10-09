@@ -3,6 +3,8 @@ import tensorflow as tf
 from data.data_utils import create_dataset
 import argparse 
 import os
+import datetime
+import pytz
 from utils.utils import loss_function
 
 # Define the train function
@@ -52,10 +54,16 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size):
         save_best_only=True,
         verbose=1
     )
-    
+
     # zipping the datasets
     train_dataset = tf.data.Dataset.zip((train_clean_dataset, train_noisy_dataset))
     val_dataset = tf.data.Dataset.zip((val_clean_dataset, val_noisy_dataset))
+
+    # define it for hk time
+    hkt = pytz.timezone('Asia/Hong_Kong')
+    # print when to starting time
+    start_time = datetime.datetime.now(hkt)
+    print(f'start training at {start_time} HKT...')
 
     # Train Model
     history = model.fit(
@@ -64,6 +72,11 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size):
         callbacks=[val_loss_checkpoint, train_loss_checkpoint],
         validation_data=val_dataset
     )
+
+    # print when to finish
+    finish_time = datetime.datetime.now(hkt)
+    print(f'finish training at {finish_time} HKT.')
+
 
 if __name__ == "__main__":
     # Argument Parsing
