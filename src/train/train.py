@@ -9,6 +9,8 @@ from utils.utils import loss_function
 def train(epochs, lr, gpu, checkpoints_folder, batch_size):
     # Check GPU
     os.environ['CUDA_VISIBLE_DEVICES'] = str(gpu)
+    # print if we are using GPU
+    print("Using GPU: ", gpu)
 
     # Define the root path for the dataset
     root_dir = 'data/'
@@ -36,23 +38,30 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size):
     model.compile(optimizer=opt, loss=loss_function, metrics=[loss_function])
 
     # Define Checkpoint Callback
-    checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
-        filepath=os.path.join(checkpoints_folder, 'model_{epoch:02d}.h5'),
+    val_loss_checkpoint = tf.keras.callbacks.ModelCheckpoint(
+        filepath=os.path.join(checkpoints_folder, 'best_model_val_loss_{epoch:02d}.weights.h5'),
         save_weights_only=True,
         monitor='val_loss',
         save_best_only=True,
         verbose=1
     )
-
+    train_loss_checkpoint = tf.keras.callbacks.ModelCheckpoint(
+        filepath=os.path.join(checkpoints_folder, 'best_model_train_loss_{epoch:02d}.weights.h5'),
+        save_weights_only=True,
+        monitor='loss',
+        save_best_only=True,
+        verbose=1
+    )
+    
     # zipping the datasets
     train_dataset = tf.data.Dataset.zip((train_clean_dataset, train_noisy_dataset))
     val_dataset = tf.data.Dataset.zip((val_clean_dataset, val_noisy_dataset))
 
     # Train Model
-    model.fit(
+    history = model.fit(
         train_dataset,
         epochs=epochs,
-        callbacks=[checkpoint_callback],
+        callbacks=[val_loss_checkpoint, train_loss_checkpoint],
         validation_data=val_dataset
     )
 
