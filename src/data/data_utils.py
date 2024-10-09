@@ -1,33 +1,28 @@
+import tensorflow as tf
 
-def get_dataloaders(data_root_copy: str, batchsize: int):
-    """function to create tensorflow data loaders for model training/validation/testing
-    Args:
-        data_root_copy (str): directory path of preprocessed raw input folder copy
-        batchsize (int): batch size
-    Returns:
-        _type_: tensors for corresponding batched inputs/outputs
-    """
-    inputs = []
-    outputs = []
-    for filename in os.listdir(data_root_copy):
-        input_, output_ = parse_input_output_pairs(data_root_copy, gold_root_copy, filename)
-        inputs.append(input_)
-        outputs.append(output_)
+# Function to decode and preprocess images
+# This function reads the image from the file path, decodes it, and preprocesses it
+# The image is resized to 120x160 and converted to float32
+# The image is assumed to be grayscale
+# The function returns the preprocessed image in float32 format
+def decode_image(file_path):
+    image = tf.io.read_file(file_path)
+    image = tf.image.decode_image(image, channels=1)  # Assuming grayscale images
+    image = tf.cast(image, tf.float32)  # Convert to float32
+    image.set_shape([120, 160, 1])
+    return image
 
-    inputs, outputs = tf.cast(tf.stack(inputs, axis=0), tf.float32), tf.cast(tf.stack(outputs, axis=0), tf.float32)
-    print(type(inputs), inputs.shape)
-    print(type(outputs), outputs.shape)
+# Fuction to create dataset from folder
+# This function takes the path to a folder containing images
+# It creates a dataset from the images in the folder
+# The function returns the dataset
+def create_dataset(clean_folder_dir, noisy_folder_dir):
+    # List files in the folder based on extension
+    clean_files = tf.data.Dataset.list_files(clean_folder_dir + '/*.png')
+    noisy_files = tf.data.Dataset.list_files(noisy_folder_dir + '/*.png')
+    
+    # Decode images
+    clean_dataset = clean_files.map(lambda x: decode_image(x))
+    noisy_dataset = noisy_files.map(lambda x: decode_image(x))
 
-    gfg_inputs = tf.data.Dataset.from_tensor_slices(inputs)
-    gfg_outputs = tf.data.Dataset.from_tensor_slices(outputs)
-    gfg_inputs_loader = gfg_inputs.batch(batchsize)
-    gfg_outputs_loader = gfg_outputs.batch(batchsize)
-
-    return gfg_inputs_loader, gfg_outputs_loader
-
-
-if __name__ == "__main__":
-    data_root = r"C:/Users/takao/Desktop/denoising_collected_data/raw_imgs"
-    gold_root = r"C:/Users/takao/Desktop/denoising_collected_data/gold_standards"
-    preprocess(data_root, gold_root)
-    print("FINISHED PREPROCESSING.")
+    return clean_dataset, noisy_dataset

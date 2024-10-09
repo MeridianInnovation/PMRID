@@ -1,80 +1,79 @@
-# src/training/train.py
-
-import argparse
-import os
+from model.model import DenoiseNetwork
 import tensorflow as tf
-from src.model.model import DenoiseNetwork
-from src.data.data_utils import load_dataset
-from src.utils.utils import loss_function
+from data.data_utils import create_dataset
+import argparse 
+import os
+from utils.utils import loss_function
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='Train the DenoiseNetwork.')
-    parser.add_argument('--epochs', type=int, default=20, help='Number of epochs.')
-    parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate.')
-    parser.add_argument('--gpu', type=str, default='0', help='GPU id to use.')
-    parser.add_argument('--batch_size', type=int, default=16, help='Batch size.')
-    parser.add_argument('--data_dir', type=str, required=True, help='Directory containing training data.')
-    parser.add_argument('--checkpoints_folder', type=str, default="saved_models/checkpoints", help='Directory to save checkpoints.')
-    parser.add_argument('--pretrain_dir', type=str, help='Path to pre-trained model weights.')
+# Define the train function
+def train(epochs, lr, gpu, checkpoints_folder):
+    # Check GPU
+    os.environ['CUDA_VISIBLE_DEVICES'] = str(gpu)
 
-    return parser.parse_args()
+    # Define the root path for the dataset
+    root_dir = 'data/'
+    # Define the paths to the clean and noisy folders for training and validation
+    train_clean_folder_dir = os.path.join(root_dir, 'images_thermal_train_resized_clean')
+    train_noisy_folder_dir = os.path.join(root_dir, 'images_thermal_train_resized_noisy')
+    val_clean_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_clean')
+    val_noisy_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_noisy')
+    
+    batch_size = 32
+    # Get Data for training dataset
+    train_clean_dataset, train_noisy_dataset = create_dataset(train_clean_folder_dir, train_noisy_folder_dir)
+    train_clean_dataset = train_clean_dataset.batch(batch_size)
+    train_noisy_dataset = train_noisy_dataset.batch(batch_size)
 
-def train():
-    args = parse_args()
+    # Get Data for validation dataset
+    val_clean_dataset, val_noisy_dataset = create_dataset(val_clean_folder_dir, val_noisy_folder_dir)
+    val_clean_dataset = val_clean_dataset.batch(batch_size)
+    val_noisy_dataset = val_noisy_dataset.batch(batch_size)
 
-    # Set GPU
-    os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
-    physical_devices = tf.config.list_physical_devices('GPU')
-    if physical_devices:
-        print(f'Using GPU: {physical_devices[int(args.gpu)]}')
-        tf.config.experimental.set_memory_growth(physical_devices[int(args.gpu)], True)
-    else:
-        print('No GPU available, using CPU.')
-
-    # Load Dataset
-    dataset = load_dataset(args.data_dir, args.batch_size)
-
-    # Initialize Model
+    # Create Model
     model = DenoiseNetwork()
 
-    # Build Model (required for subclassed models)
-    model.build(input_shape=(None, 160, 120, 1))
-    model.summary()
-
-    # Load Pre-trained Weights if Provided
-    if args.pretrain_dir:
-        model.load_weights(args.pretrain_dir)
-        print(f'Loaded pre-trained weights from {args.pretrain_dir}')
-
     # Compile Model
-    optimizer = tf.keras.optimizers.Adam(learning_rate=args.lr)
-    model.compile(optimizer=optimizer, loss=loss_function, metrics=[loss_function])
+    opt = tf.keras.optimizers.Adam(lr)
+    model.compile(optimizer=opt, loss=loss_function, metrics=[loss_function])
 
-    # Prepare Checkpoints Directory
-    if not os.path.exists(args.checkpoints_folder):
-        os.makedirs(args.checkpoints_folder)
-
-    checkpoint_filepath = os.path.join(args.checkpoints_folder, 'best_model.h5')
+    # Define Checkpoint Callback
     checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
-        filepath=checkpoint_filepath,
+        filepath=os.path.join(checkpoints_folder, 'model_{epoch:02d}.h5'),
         save_weights_only=True,
-        monitor='loss',
-        mode='min',
+        monitor='val_loss',
         save_best_only=True,
         verbose=1
     )
 
-    # Start Training
+    # zipping the datasets
+    train_dataset = tf.data.Dataset.zip((train_clean_dataset, train_noisy_dataset))
+    val_dataset = tf.data.Dataset.zip((val_clean_dataset, val_noisy_dataset))
+
+    # Train Model
     model.fit(
-        dataset,
-        epochs=args.epochs,
-        callbacks=[checkpoint_callback]
+        train_dataset,
+        epochs=epochs,
+        callbacks=[checkpoint_callback],
+        validation_data=val_dataset
     )
 
-    # Save Final Model
-    final_model_path = os.path.join(args.checkpoints_folder, 'final_model.h5')
-    model.save_weights(final_model_path)
-    print(f'Model weights saved to {final_model_path}')
+if __name__ == "__main__":
+    # Argument Parsing
+    parser = argparse.ArgumentParser()
 
-if __name__ == '__main__':
-    train()
+    # Input Parameters
+    parser.add_argument('--epochs', type=int, default=20, help='Number of epochs for training')
+    parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
+    parser.add_argument('--gpu', type=int, default=0, help='GPU device ID to use')
+    parser.add_argument('--checkpoints_folder', type=str, default="weights/ckpt", help='Folder to save checkpoints')
+
+    # Parse arguments
+    config = parser.parse_args()
+
+    # Call the train function with the parsed arguments
+    train(
+        epochs=config.epochs,
+        lr=config.lr,
+        gpu=config.gpu,
+        checkpoints_folder=config.checkpoints_folder,
+    )
