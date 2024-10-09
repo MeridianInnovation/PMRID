@@ -6,7 +6,7 @@ import os
 from utils.utils import loss_function
 
 # Define the train function
-def train(epochs, lr, gpu, checkpoints_folder):
+def train(epochs, lr, gpu, checkpoints_folder, batch_size):
     # Check GPU
     os.environ['CUDA_VISIBLE_DEVICES'] = str(gpu)
 
@@ -18,7 +18,6 @@ def train(epochs, lr, gpu, checkpoints_folder):
     val_clean_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_clean')
     val_noisy_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_noisy')
     
-    batch_size = 32
     # Get Data for training dataset
     train_clean_dataset, train_noisy_dataset = create_dataset(train_clean_folder_dir, train_noisy_folder_dir)
     train_clean_dataset = train_clean_dataset.batch(batch_size)
@@ -66,6 +65,7 @@ if __name__ == "__main__":
     parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
     parser.add_argument('--gpu', type=int, default=0, help='GPU device ID to use')
     parser.add_argument('--checkpoints_folder', type=str, default="weights/ckpt", help='Folder to save checkpoints')
+    parser.add_argument('--batch_size', type=int, default=16, help='Batch size for training')
 
     # Parse arguments
     config = parser.parse_args()
@@ -76,4 +76,5 @@ if __name__ == "__main__":
         lr=config.lr,
         gpu=config.gpu,
         checkpoints_folder=config.checkpoints_folder,
+        batch_size=config.batch_size
     )
