@@ -53,8 +53,8 @@ class Upsample(tf.keras.layers.Layer):
     return output  
 
 class DenoiseNetwork(tf.keras.Model):
-  def __init__(self):
-    super(DenoiseNetwork, self).__init__()
+  def __init__(self, **kwargs):
+    super(DenoiseNetwork, self).__init__(**kwargs)
 
     # Input stage
     self.input_stage = tf.keras.layers.Conv2D(16, (3,3), padding="same")
@@ -120,6 +120,9 @@ class DenoiseNetwork(tf.keras.Model):
         Decoder(16),
         tf.keras.layers.Conv2D(1, kernel_size=(3,3), padding='same')
     ])
+
+  def get_config(self):
+    return super(DenoiseNetwork, self).get_config()
   
   def call(self, input):
 
