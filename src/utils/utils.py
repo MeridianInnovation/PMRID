@@ -1,6 +1,6 @@
 # src/utils/utils.py
 import tensorflow as tf
-from tf.keras.saving import register_keras_serializable
+from tensorflow.keras.saving import register_keras_serializable
 
 # def load_config(config_path):
 #     with open(config_path, 'r') as f:
