@@ -6,7 +6,7 @@ We will modify based on the implementation here.
   - [Install](#install)
   - [Getting Started](#getting-started)
   - [Running](#running)
-    - [Result](#result)
+  - [Result](#result)
   - [References](#references)
 
 ## Install
@@ -19,7 +19,8 @@ In a virtual environment, install all the necessary packages and libraries by ru
 ## Running
 
 - Creating Data
-  - Clone the repository [CycleISP](https://github.com/swz30/CycleISP) to generate pairs clean and noisy image.
+
+- Clone the repository [CycleISP](https://github.com/swz30/CycleISP) to generate pairs clean and noisy images.
 
   ```
   python generate_rgb_data.py --input_dir <path to clean images folder> --result_dir <path to output>
@@ -30,7 +31,7 @@ In a virtual environment, install all the necessary packages and libraries by ru
 - Run file ipynb to train model.
 
 
-### Result
+## Result
 
 This result acquired after training 20 epochs, input shape: 256x256x3. Number of pairs images is 2476.
 

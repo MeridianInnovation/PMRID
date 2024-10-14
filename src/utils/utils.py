@@ -1,5 +1,4 @@
 # src/utils/utils.py
-import yaml
 import tensorflow as tf
 from tf.keras.saving import register_keras_serializable
 
