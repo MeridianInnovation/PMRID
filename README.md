@@ -22,7 +22,7 @@ In a virtual environment, install all the necessary packages and libraries by ru
 
 ## Inference
 
-Clone this repository and run on [Colab](https://colab.research.google.com/notebooks/intro.ipynb).
+Clone this repository and run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
 
 ## Result
 
