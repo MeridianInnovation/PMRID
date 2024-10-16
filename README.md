@@ -33,7 +33,7 @@ In a virtual environment, install all the necessary packages and libraries by ru
 
 ## Result
 
-This result acquired after training 20 epochs, input shape: 256x256x3. Number of pairs images is 2476.
+This result acquired after training 20 epochs
 
 ## References
 [1] [Practical Deep Raw Image Denoising on Mobile Devices - ECCV 2020](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
