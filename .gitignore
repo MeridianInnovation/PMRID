@@ -1,6 +1,6 @@
 # Ignore data files
 /data/*
-!/data/.gitkeep
+!/data/README.md
 
 # Ignore saved models
 /saved_models/*
