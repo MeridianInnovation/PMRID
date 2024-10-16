@@ -7,6 +7,8 @@ import datetime
 import pytz
 from utils.utils import ssim_loss
 
+from utils.hyperparameters import Hyperparameters
+
 # Define the train function
 def train(epochs, lr, gpu, checkpoints_folder, batch_size):
     # Check GPU
@@ -79,24 +81,14 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size):
 
 
 if __name__ == "__main__":
-    # Argument Parsing
-    parser = argparse.ArgumentParser()
-
-    # Input Parameters
-    parser.add_argument('--epochs', type=int, default=20, help='Number of epochs for training')
-    parser.add_argument('--lr', type=float, default=1e-3, help='Learning rate')
-    parser.add_argument('--gpu', type=int, default=0, help='GPU device ID to use')
-    parser.add_argument('--checkpoints_folder', type=str, default="weights/ckpt", help='Folder to save checkpoints')
-    parser.add_argument('--batch_size', type=int, default=16, help='Batch size for training')
-
-    # Parse arguments
-    config = parser.parse_args()
+    # Parse the arguments
+    hyperparams = Hyperparameters('hyperparameters_1016_0.yaml')
 
     # Call the train function with the parsed arguments
     train(
-        epochs=config.epochs,
-        lr=config.lr,
-        gpu=config.gpu,
-        checkpoints_folder=config.checkpoints_folder,
-        batch_size=config.batch_size
+        epochs=hyperparams.epochs,
+        lr=hyperparams.lr,
+        gpu=hyperparams.gpu,
+        checkpoints_folder=hyperparams.checkpoints_folder,
+        batch_size=hyperparams.batch_size
     )
