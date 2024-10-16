@@ -4,8 +4,8 @@ The Tensorflow Reimplementation based the [Practical Deep Raw Image Denoising on
 We will modify based on the implementation here.
 ## Content
   - [Install](#install)
-  - [Getting Started](#getting-started)
-  - [Running](#running)
+  - [Training](#training)
+  - [Inference](#inference)
   - [Result](#result)
   - [References](#references)
 
@@ -14,7 +14,7 @@ In a virtual environment, install all the necessary packages and libraries by ru
 
 ## Getting Started
 
-- Clone this repository and run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1C2818h7KnjNv4R1sabe14_AYL7lWhmu6?usp=sharing).
+- Clone this repository and run on [Colab](https://colab.research.google.com/notebooks/intro.ipynb).
 
 ## Running
 
@@ -30,10 +30,13 @@ In a virtual environment, install all the necessary packages and libraries by ru
 
 - Run file ipynb to train model.
 
+## Inference
+
+Clone this repository and run on [Colab](https://colab.research.google.com/notebooks/intro.ipynb).
 
 ## Result
 
-This result acquired after training 20 epochs
+This result acquired after training 20 epochs, input shape: 256x256x3. Number of pairs images is 2476.
 
 ## References
 [1] [Practical Deep Raw Image Denoising on Mobile Devices - ECCV 2020](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
