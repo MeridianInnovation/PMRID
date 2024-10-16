@@ -17,7 +17,8 @@ class Hyperparameters:
 
     def load_hyperparameters(self, config_file):
         """ Load hyperparameters from a config file """
-        with open(config_file, 'r') as file:
+        path_to_config = os.path.join(os.getcwd(), 'configs', config_file)
+        with open(path_to_config, 'r') as file:
             config = yaml.safe_load(file)
         
         # Set the hyperparameters
@@ -36,6 +37,5 @@ class Hyperparameters:
 
 if __name__ == "__main__":
     # print(os.getcwd()
-    path_to_config = os.path.join(os.getcwd(), 'configs/hyperparameters.yaml')
-    hyperparams = Hyperparameters(path_to_config)
+    hyperparams = Hyperparameters('hyperparameters.yaml')
     hyperparams.print_params()
