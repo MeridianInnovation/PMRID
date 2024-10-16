@@ -14,7 +14,7 @@ In a virtual environment, install all the necessary packages and libraries by ru
 
 ## Getting Started
 
-- Clone this repository and run on [Colab](https://colab.research.google.com/notebooks/intro.ipynb).
+- Clone this repository and run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1C2818h7KnjNv4R1sabe14_AYL7lWhmu6?usp=sharing).
 
 ## Running
 
