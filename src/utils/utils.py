@@ -8,6 +8,14 @@ from tensorflow.keras.saving import register_keras_serializable
 #     return config
 
 # define loss function
-@register_keras_serializable(package='Custom', name='loss_function')
-def loss_function(y_true, y_pred):
+
+# l1 loss function for denoising
+@register_keras_serializable(package='Custom', name='l1_loss')
+def l1_loss(y_true, y_pred):
     return tf.reduce_mean(tf.abs(y_true - y_pred))
+
+# ssim loss function for denoising
+@register_keras_serializable(package='Custom', name='ssim_loss')
+def ssim_loss(y_true, y_pred):
+    ssim_values = tf.image.ssim(y_true, y_pred, max_val=255)
+    return 1 - ssim_values

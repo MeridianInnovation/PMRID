@@ -5,7 +5,7 @@ import argparse
 import os
 import datetime
 import pytz
-from utils.utils import loss_function
+from utils.utils import ssim_loss
 
 # Define the train function
 def train(epochs, lr, gpu, checkpoints_folder, batch_size):
@@ -37,7 +37,7 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size):
 
     # Compile Model
     opt = tf.keras.optimizers.Adam(lr)
-    model.compile(optimizer=opt, loss=loss_function, metrics=[loss_function])
+    model.compile(optimizer=opt, loss=ssim_loss, metrics=[ssim_loss])
 
     # Define Checkpoint Callback
     val_loss_checkpoint = tf.keras.callbacks.ModelCheckpoint(
