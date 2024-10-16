@@ -14,7 +14,7 @@ In a virtual environment, install all the necessary packages and libraries by ru
 
 ## Training
 
-- Load pre-processed dataset from drive
+- Load pre-processed dataset from [drive](https://drive.google.com/file/d/1kWvuOn_u4gQKIUjpKU4fzdPZWWEntJzH/view)
 
 - Change path variables in Denoiser.ipynb
 
