@@ -13,6 +13,7 @@ We will modify based on the implementation here.
 In a virtual environment, install all the necessary packages and libraries by running pip install -r requirements.txt at the root directory
 
 ## Training
+There are two ways to train the model. One is locally, another is colab.
 
 - Load pre-processed dataset from [drive](https://drive.google.com/file/d/1kWvuOn_u4gQKIUjpKU4fzdPZWWEntJzH/view)
 
