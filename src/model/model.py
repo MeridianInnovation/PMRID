@@ -139,3 +139,10 @@ class DenoiseNetwork(tf.keras.Model):
     output = self.output_stage(out_d3) + input
 
     return output
+  
+if __name__ == '__main__':
+  net = DenoiseNetwork()
+  img = tf.random.normal((1, 160, 120, 1))
+  out = net(img)
+
+  import IPython; IPython.embed()
