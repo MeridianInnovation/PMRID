@@ -1,6 +1,6 @@
 from model.model import DenoiseNetwork
 import tensorflow as tf
-from data.data_utils import create_dataset
+from data.data_utils import prepare_dataloaders
 import os
 import datetime
 import pytz
@@ -17,20 +17,8 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momen
 
     # Define the root path for the dataset
     root_dir = 'data/'
-    # Define the paths to the clean and noisy folders for training and validation
-    train_noisy_folder_dir = os.path.join(root_dir, 'images_thermal_train_resized_noisy')
-    train_clean_folder_dir = os.path.join(root_dir, 'images_thermal_train_resized_clean')
-    val_noisy_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_noisy')
-    val_clean_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_clean')
-    
-    # Create Dataset for training and validation
-    train_noisy_dataset, train_clean_dataset = create_dataset(train_noisy_folder_dir, train_clean_folder_dir)
-    train_noisy_dataset = train_noisy_dataset.batch(batch_size)
-    train_clean_dataset = train_clean_dataset.batch(batch_size)
-    # validation dataset
-    val_noisy_dataset, val_clean_dataset = create_dataset(val_noisy_folder_dir, val_clean_folder_dir)
-    val_noisy_dataset = val_noisy_dataset.batch(batch_size)
-    val_clean_dataset = val_clean_dataset.batch(batch_size)
+    # Create the training and validation data loaders
+    train_dataset, val_dataset = prepare_dataloaders(root_dir, batch_size)
 
     # Initialize Optimizer
     if optimizer_name == 'adam' or optimizer_name == 'Adam':
@@ -60,10 +48,6 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momen
         save_best_only=True,
         verbose=1
     )
-
-    # zipping the datasets
-    train_dataset = tf.data.Dataset.zip((train_noisy_dataset, train_clean_dataset))
-    val_dataset = tf.data.Dataset.zip((val_noisy_dataset, val_clean_dataset))
 
     # define it for hk time
     hkt = pytz.timezone('Asia/Hong_Kong')
