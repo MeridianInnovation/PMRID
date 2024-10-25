@@ -16,7 +16,7 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momen
     print("Using GPU: ", gpu)
 
     # Define the root path for the dataset
-    root_dir = 'data/'
+    root_dir = 'data'
     # Create the training and validation data loaders
     train_dataset, val_dataset = prepare_dataloaders(root_dir, batch_size)
 

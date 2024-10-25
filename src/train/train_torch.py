@@ -96,7 +96,7 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
         raise ValueError('Invalid optimizer: {}'.format(optimizer))
 
     # Define the root path for the dataset
-    root_dir = 'data/'
+    root_dir = 'data'
     # Create the training and validation data loaders
     training_loader, validation_loader = prepare_dataloaders(root_dir, batch_size)
 
