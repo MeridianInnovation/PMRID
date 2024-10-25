@@ -1,7 +1,10 @@
 # Practical Deep Raw Image Denoising on Mobile Devices
-The Tensorflow Reimplementation based the [Practical Deep Raw Image Denoising on Mobile Devices - ECCV 2020](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
+`The denoisers repo is [here](https://github.com/MeridianInnovation/Denoisers/blob/main/README.md). The repo contains the information about all the models.`
 
-We will modify based on the implementation here.
+The Tensorflow and Pytorch Reimplementation based the [Practical Deep Raw Image Denoising on Mobile Devices - ECCV 2020](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
+
+`The difference with the original PMRID is to use three encoders and decoders because of smaller resolution ? . Compared with the original PMRID model design, we delete encoder stage 4 because it is the deepest. Then we delete decoder stage 1 because of corresponding skip connection.` More information can be found at [here](https://github.com/MeridianInnovation/Denoisers).
+
 ## Content
   - [Install](#install)
   - [Training](#training)

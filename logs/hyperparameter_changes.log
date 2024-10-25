@@ -1,0 +1,11 @@
+# Hyperparameter Change Log
+
+## 2024-10-16
+- Changed `batch_size` from 32 to 64
+  - Reason: Decreased training time.
+- Changed `learning_rate` from 1e-5 to 2e-5
+  - Reason: Changed learning rate to match the change in batch size.
+- unchanged `num_epochs` from 20
+  - Reason: No reason given.
+- Changed 'optimizer' from 'adam' to 'sgd'
+  - Reason: Changed optimizer to converge slower.

@@ -167,10 +167,16 @@ class Network(nn.Module):
 
 if __name__ == "__main__":
     net = Network()
-    # img = mge.tensor(np.random.randn(1, 4, 64, 64).astype(np.float32))
     img = torch.randn(1, 4, 64, 64, device=torch.device('cpu'), dtype=torch.float32)
     out = net(img)
 
-    import IPython; IPython.embed()
+    # Print detailed information about the output
+    print("Input Shape:", img.shape)
+    print("Output Shape:", out.shape)
+    print("Output Values:", out)
+    print("Output Mean:", out.mean().item())
+    print("Output Standard Deviation:", out.std().item())
+    print("Output Min:", out.min().item())
+    print("Output Max:", out.max().item())
 
 # vim: ts=4 sw=4 sts=4 expandtab

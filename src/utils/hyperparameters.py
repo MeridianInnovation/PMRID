@@ -27,6 +27,7 @@ class Hyperparameters:
         self.epochs = config['epochs']
         self.optimizer = config['optimizer']
         self.momentum = config['momentum']
+        self.checkpoints_folder = config['checkpoints_folder']
 
     def print_params(self):
         print(f"Learning Rate: {self.learning_rate}")
@@ -34,8 +35,9 @@ class Hyperparameters:
         print(f"Epochs: {self.epochs}")
         print(f"Optimizer: {self.optimizer}")
         print(f"Momentum: {self.momentum}")
+        print(f"Checkpoints Folder: {self.checkpoints_folder}")
 
 if __name__ == "__main__":
     # print(os.getcwd()
-    hyperparams = Hyperparameters('hyperparameters.yaml')
+    hyperparams = Hyperparameters('hyperparameters_sample.yaml')
     hyperparams.print_params()

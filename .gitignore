@@ -6,14 +6,6 @@
 /saved_models/*
 !/saved_models/.gitkeep
 
-# Ignore logs
-/logs/*
-!/logs/.gitkeep
-
-# Ignore config files with sensitive info
-configs/*.yaml
-!configs/config_example.yaml
-
 # Ignore compiled files
 __pycache__/
 *.py[cod]
