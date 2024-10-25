@@ -62,7 +62,7 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model, training_loader, l
     return last_loss
 
 # Define the train function
-def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momentum=0.0):
+def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0.0):
     """
       Load the data, create the model, and train the model, saving the best model.
 
@@ -78,10 +78,20 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momen
       Returns:
         None
     """
-    # Check GPU
-    os.environ['CUDA_VISIBLE_DEVICES'] = str(gpu)
-    # print if we are using GPU
-    print("Using GPU: ", gpu)
+    # Define the device
+    device = torch.device("cuda" if torch.cuda.is_available() else 'cpu')
+    print('Using device:', device)
+
+    # Create the model and set the device for the model
+    model = Network().to(device)
+
+    # Initialize the optimizer
+    if optimizer_name == 'adam' or optimizer_name == 'Adam':
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    elif optimizer_name == 'sgd' or optimizer_name == 'SGD':
+        optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum)
+    else:
+        raise ValueError('Invalid optimizer: {}'.format(optimizer))
 
     # Define the root path for the dataset
     root_dir = 'data/'
@@ -107,17 +117,6 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momen
     epoch_number = 0
 
     best_vloss = 1_000_000
-
-    # Create the model
-    model = Network()
-
-    # Initialize the optimizer
-    if optimizer_name == 'adam' or optimizer_name == 'Adam':
-        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    elif optimizer_name == 'sgd' or optimizer_name == 'SGD':
-        optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum)
-    else:
-        raise ValueError('Invalid optimizer: {}'.format(optimizer))
 
     # Define the loss function
     loss_fn = ssim_loss
@@ -169,7 +168,6 @@ if __name__ == "__main__":
     train(
         epochs=hyperparams.epochs,
         lr=hyperparams.learning_rate,
-        gpu=hyperparams.gpu,
         checkpoints_folder=hyperparams.checkpoints_folder,
         batch_size=hyperparams.batch_size,
         optimizer_name=hyperparams.optimizer,

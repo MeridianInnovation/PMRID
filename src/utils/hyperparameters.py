@@ -27,7 +27,6 @@ class Hyperparameters:
         self.epochs = config['epochs']
         self.optimizer = config['optimizer']
         self.momentum = config['momentum']
-        self.gpu = config['gpu']
         self.checkpoints_folder = config['checkpoints_folder']
 
     def print_params(self):
@@ -36,7 +35,6 @@ class Hyperparameters:
         print(f"Epochs: {self.epochs}")
         print(f"Optimizer: {self.optimizer}")
         print(f"Momentum: {self.momentum}")
-        print(f"GPU: {self.gpu}")
         print(f"Checkpoints Folder: {self.checkpoints_folder}")
 
 if __name__ == "__main__":
