@@ -1,8 +1,7 @@
 from model.model_torch import Network
 # import pytorch now
 import torch
-from torch.utils.data import DataLoader
-from data.data_utils import create_dataset
+from data.data_utils_torch import prepare_dataloaders
 import os
 import datetime
 import pytz
@@ -11,7 +10,8 @@ from torch.utils.tensorboard import SummaryWriter
 from utils.hyperparameters import Hyperparameters
 
 # Define the training loop
-def train_one_epoch(epoch_index, tb_writer, optimizer, model, training_loader, loss_fn):
+def train_one_epoch(epoch_index, tb_writer, optimizer, model, 
+                    training_loader, loss_fn, device):
     """
     Train the model for one epoch.
 
@@ -22,12 +22,14 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model, training_loader, l
         model: The model object.
         training_loader: The training data loader.
         loss_fn: The loss function.
+        device: The device to use.
 
     Returns:
         The average loss per batch.
     """
-    # Set the model to training mode
+    # Initialize the running loss. This will accumulate the loss per batch
     running_loss = 0
+    # Initialize the last loss. This is used to report the loss per batch
     last_loss = 0
 
     # Here, we use enumerate(training_loader) instead of
@@ -36,6 +38,8 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model, training_loader, l
     for i, data in enumerate(training_loader):
         # Every data instance is an input + label pair
         inputs, labels = data
+        # Move the data to the device
+        inputs, labels = inputs.to(device), labels.to(device)
 
         # Zero your gradients for every batch!
         optimizer.zero_grad()
@@ -46,7 +50,6 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model, training_loader, l
         # Compute the loss and its gradients
         loss = loss_fn(outputs, labels)
         loss.backward()
-
         # Adjust learning weights
         optimizer.step()
 
@@ -57,7 +60,7 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model, training_loader, l
             print('  batch {} loss: {}'.format(i + 1, last_loss))
             tb_x = epoch_index * len(training_loader) + i + 1
             tb_writer.add_scalar('Loss/train', last_loss, tb_x)
-            running_loss = 0.
+            running_loss = 0
 
     return last_loss
 
@@ -69,7 +72,6 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
       Args:
         epochs: The number of epochs to train the model.
         lr: The learning rate.
-        gpu: The GPU to use.
         checkpoints_folder: The folder to save the model checkpoints.
         batch_size: The batch size.
         optimizer_name: The optimizer to use.
@@ -95,28 +97,16 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
 
     # Define the root path for the dataset
     root_dir = 'data/'
-    # Define the paths to the clean and noisy folders for training and validation
-    train_clean_folder_dir = os.path.join(root_dir, 'images_thermal_train_resized_clean')
-    train_noisy_folder_dir = os.path.join(root_dir, 'images_thermal_train_resized_noisy')
-    val_clean_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_clean')
-    val_noisy_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_noisy')
-    
-    # Create Dataset for training and validation
-    train_clean_dataset, train_noisy_dataset = create_dataset(train_clean_folder_dir, train_noisy_folder_dir)
-    val_clean_dataset, val_noisy_dataset = create_dataset(val_clean_folder_dir, val_noisy_folder_dir)
-    
-    # Create Dataloader for training and validation
-    # Shuffle for training dataset, not shuffle for validation dataset
-    training_loader = DataLoader(list(zip(train_noisy_dataset, train_clean_dataset)), batch_size=batch_size, shuffle=True)
-    validation_loader = DataLoader(list(zip(val_noisy_dataset, val_clean_dataset)), batch_size=batch_size, shuffle=False)
+    # Create the training and validation data loaders
+    training_loader, validation_loader = prepare_dataloaders(root_dir, batch_size)
 
     # Initializing in a separate cell so we can easily add more epochs to the same run
     hkt = pytz.timezone('Asia/Hong_Kong')
     timestamp = datetime.datetime.now(hkt)
     writer = SummaryWriter('runs/fashion_trainer_{}'.format(timestamp))
+    
     epoch_number = 0
-
-    best_vloss = 1_000_000
+    best_vloss = float('inf') # Set the best validation loss to infinity
 
     # Define the loss function
     loss_fn = ssim_loss
@@ -124,12 +114,14 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
     for epoch in range(epochs):
         print('EPOCH {}:'.format(epoch_number + 1))
 
+        # Trainning Phase
         # Make sure gradient tracking is on, and do a pass over the data
+        # Set the model to training mode
         model.train(True)
-
-        avg_loss = train_one_epoch(epoch_number, writer, optimizer, loss_fn, model, training_loader)
-
-
+        avg_loss = train_one_epoch(epoch_number, writer, optimizer, 
+                                    loss_fn, model, training_loader, device)
+        
+        # Validation Phase
         running_vloss = 0.0
         # Set the model to evaluation mode, disabling dropout and using population
         # statistics for batch normalization.
@@ -139,6 +131,8 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
         with torch.no_grad():
             for i, vdata in enumerate(validation_loader):
                 vinputs, vlabels = vdata
+                # Move the data to the device
+                vinputs, vlabels = vinputs.to(device), vlabels.to(device)
                 voutputs = model(vinputs)
                 vloss = loss_fn(voutputs, vlabels)
                 running_vloss += vloss
@@ -156,7 +150,10 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
         # Track best performance, and save the model's state
         if avg_vloss < best_vloss:
             best_vloss = avg_vloss
-            torch.save(model.state_dict(), checkpoints_folder)
+            model_path = 'model_{}_{}'.format(timestamp, epoch_number)
+            model_full_path = os.path.join(checkpoints_folder, model_path)
+            torch.save(model.state_dict(), model_full_path)
+            print(f'  Saved model at {model_path} with validation loss {best_vloss}')
 
         epoch_number += 1
 
