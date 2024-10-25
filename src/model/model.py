@@ -145,4 +145,11 @@ if __name__ == '__main__':
   img = tf.random.normal((1, 160, 120, 1))
   out = net(img)
 
-  import IPython; IPython.embed()
+  print("Input Shape:", img.shape)
+  print("Output Shape:", out.shape)
+  print("Output Values:", out.numpy())
+  print("Output Mean:", tf.reduce_mean(out).numpy())
+  print("Output Standard Deviation:", tf.math.reduce_std(out).numpy())
+  print("Output Min:", tf.reduce_min(out).numpy())
+  print("Output Max:", tf.reduce_max(out).numpy())
+

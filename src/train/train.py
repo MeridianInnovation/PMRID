@@ -1,7 +1,6 @@
 from model.model import DenoiseNetwork
 import tensorflow as tf
 from data.data_utils import create_dataset
-import argparse 
 import os
 import datetime
 import pytz
@@ -10,7 +9,7 @@ from utils.utils import ssim_loss
 from utils.hyperparameters import Hyperparameters
 
 # Define the train function
-def train(epochs, lr, gpu, checkpoints_folder, batch_size):
+def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer, momentum=0.0):
     # Check GPU
     os.environ['CUDA_VISIBLE_DEVICES'] = str(gpu)
     # print if we are using GPU
@@ -38,7 +37,7 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size):
     model = DenoiseNetwork()
 
     # Compile Model
-    opt = tf.keras.optimizers.Adam(lr)
+    opt = optimizer(lr)
     model.compile(optimizer=opt, loss=ssim_loss, metrics=[ssim_loss])
 
     # Define Checkpoint Callback
@@ -87,8 +86,10 @@ if __name__ == "__main__":
     # Call the train function with the parsed arguments
     train(
         epochs=hyperparams.epochs,
-        lr=hyperparams.lr,
+        lr=hyperparams.learning_rate,
         gpu=hyperparams.gpu,
         checkpoints_folder=hyperparams.checkpoints_folder,
-        batch_size=hyperparams.batch_size
+        batch_size=hyperparams.batch_size,
+        optimizer=hyperparams.optimizer,
+        momentum=hyperparams.momentum,
     )
