@@ -9,7 +9,7 @@ from utils.utils import ssim_loss
 from utils.hyperparameters import Hyperparameters
 
 # Define the train function
-def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer, momentum=0.0):
+def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momentum=0.0):
     # Check GPU
     os.environ['CUDA_VISIBLE_DEVICES'] = str(gpu)
     # print if we are using GPU
@@ -18,26 +18,31 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer, momentum=0
     # Define the root path for the dataset
     root_dir = 'data/'
     # Define the paths to the clean and noisy folders for training and validation
-    train_clean_folder_dir = os.path.join(root_dir, 'images_thermal_train_resized_clean')
     train_noisy_folder_dir = os.path.join(root_dir, 'images_thermal_train_resized_noisy')
-    val_clean_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_clean')
+    train_clean_folder_dir = os.path.join(root_dir, 'images_thermal_train_resized_clean')
     val_noisy_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_noisy')
+    val_clean_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_clean')
     
-    # Get Data for training dataset
-    train_clean_dataset, train_noisy_dataset = create_dataset(train_clean_folder_dir, train_noisy_folder_dir)
-    train_clean_dataset = train_clean_dataset.batch(batch_size)
+    # Create Dataset for training and validation
+    train_noisy_dataset, train_clean_dataset = create_dataset(train_noisy_folder_dir, train_clean_folder_dir)
     train_noisy_dataset = train_noisy_dataset.batch(batch_size)
-
-    # Get Data for validation dataset
-    val_clean_dataset, val_noisy_dataset = create_dataset(val_clean_folder_dir, val_noisy_folder_dir)
-    val_clean_dataset = val_clean_dataset.batch(batch_size)
+    train_clean_dataset = train_clean_dataset.batch(batch_size)
+    # validation dataset
+    val_noisy_dataset, val_clean_dataset = create_dataset(val_noisy_folder_dir, val_clean_folder_dir)
     val_noisy_dataset = val_noisy_dataset.batch(batch_size)
+    val_clean_dataset = val_clean_dataset.batch(batch_size)
 
+    # Initialize Optimizer
+    if optimizer_name == 'adam' or optimizer_name == 'Adam':
+        opt = tf.keras.optimizers.Adam(learning_rate=lr)
+    elif optimizer_name == 'sgd' or optimizer_name == 'SGD':
+        opt = tf.keras.optimizers.SGD(learning_rate=lr, momentum=momentum)
+    else:
+        raise ValueError('Invalid optimizer: {}'.format(optimizer_name))
+    
     # Create Model
     model = DenoiseNetwork()
-
     # Compile Model
-    opt = optimizer(lr)
     model.compile(optimizer=opt, loss=ssim_loss, metrics=[ssim_loss])
 
     # Define Checkpoint Callback
@@ -57,8 +62,8 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer, momentum=0
     )
 
     # zipping the datasets
-    train_dataset = tf.data.Dataset.zip((train_clean_dataset, train_noisy_dataset))
-    val_dataset = tf.data.Dataset.zip((val_clean_dataset, val_noisy_dataset))
+    train_dataset = tf.data.Dataset.zip((train_noisy_dataset, train_clean_dataset))
+    val_dataset = tf.data.Dataset.zip((val_noisy_dataset, val_clean_dataset))
 
     # define it for hk time
     hkt = pytz.timezone('Asia/Hong_Kong')
@@ -90,6 +95,6 @@ if __name__ == "__main__":
         gpu=hyperparams.gpu,
         checkpoints_folder=hyperparams.checkpoints_folder,
         batch_size=hyperparams.batch_size,
-        optimizer=hyperparams.optimizer,
+        optimizer_name=hyperparams.optimizer,
         momentum=hyperparams.momentum,
     )

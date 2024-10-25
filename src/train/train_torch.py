@@ -1,19 +1,34 @@
 from model.model_torch import Network
 # import pytorch now
+import torch
 from torch.utils.data import DataLoader
 from data.data_utils import create_dataset
 import os
 import datetime
 import pytz
 from utils.utils import ssim_loss
-
+from torch.utils.tensorboard import SummaryWriter
 from utils.hyperparameters import Hyperparameters
 
 # Define the training loop
-def train_one_epoch(epoch_index, tb_writer):
+def train_one_epoch(epoch_index, tb_writer, optimizer, model, training_loader, loss_fn):
+    """
+    Train the model for one epoch.
+
+    Args:
+        epoch_index: The index of the current epoch.
+        tb_writer: The TensorBoard writer object.
+        optimizer: The optimizer object.
+        model: The model object.
+        training_loader: The training data loader.
+        loss_fn: The loss function.
+
+    Returns:
+        The average loss per batch.
+    """
     # Set the model to training mode
-    running_loss = 0.
-    last_loss = 0.
+    running_loss = 0
+    last_loss = 0
 
     # Here, we use enumerate(training_loader) instead of
     # iter(training_loader) so that we can track the batch
@@ -47,7 +62,22 @@ def train_one_epoch(epoch_index, tb_writer):
     return last_loss
 
 # Define the train function
-def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer, momentum=0.0):
+def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momentum=0.0):
+    """
+      Load the data, create the model, and train the model, saving the best model.
+
+      Args:
+        epochs: The number of epochs to train the model.
+        lr: The learning rate.
+        gpu: The GPU to use.
+        checkpoints_folder: The folder to save the model checkpoints.
+        batch_size: The batch size.
+        optimizer_name: The optimizer to use.
+        momentum: The momentum for the optimizer.
+
+      Returns:
+        None
+    """
     # Check GPU
     os.environ['CUDA_VISIBLE_DEVICES'] = str(gpu)
     # print if we are using GPU
@@ -66,32 +96,39 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer, momentum=0
     val_clean_dataset, val_noisy_dataset = create_dataset(val_clean_folder_dir, val_noisy_folder_dir)
     
     # Create Dataloader for training and validation
-    # Shuffle for training dataset
-    # not shuffle for validation dataset
-    training_loader = DataLoader(list(zip(train_clean_dataset, train_noisy_dataset)), batch_size=batch_size, shuffle=True)
-    validation_loader = DataLoader(list(zip(val_clean_dataset, val_noisy_dataset)), batch_size=batch_size, shuffle=False)
-
-    # define it for hk time
-    hkt = pytz.timezone('Asia/Hong_Kong')
-    # print when to starting time
-    start_time = datetime.datetime.now(hkt)
-    print(f'start training at {start_time} HKT...')
+    # Shuffle for training dataset, not shuffle for validation dataset
+    training_loader = DataLoader(list(zip(train_noisy_dataset, train_clean_dataset)), batch_size=batch_size, shuffle=True)
+    validation_loader = DataLoader(list(zip(val_noisy_dataset, val_clean_dataset)), batch_size=batch_size, shuffle=False)
 
     # Initializing in a separate cell so we can easily add more epochs to the same run
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    hkt = pytz.timezone('Asia/Hong_Kong')
+    timestamp = datetime.datetime.now(hkt)
     writer = SummaryWriter('runs/fashion_trainer_{}'.format(timestamp))
     epoch_number = 0
 
-    EPOCHS = 5
+    best_vloss = 1_000_000
 
-    best_vloss = 1_000_000.
+    # Create the model
+    model = Network()
 
-    for epoch in range(EPOCHS):
+    # Initialize the optimizer
+    if optimizer_name == 'adam' or optimizer_name == 'Adam':
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    elif optimizer_name == 'sgd' or optimizer_name == 'SGD':
+        optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum)
+    else:
+        raise ValueError('Invalid optimizer: {}'.format(optimizer))
+
+    # Define the loss function
+    loss_fn = ssim_loss
+
+    for epoch in range(epochs):
         print('EPOCH {}:'.format(epoch_number + 1))
 
         # Make sure gradient tracking is on, and do a pass over the data
         model.train(True)
-        avg_loss = train_one_epoch(epoch_number, writer)
+
+        avg_loss = train_one_epoch(epoch_number, writer, optimizer, loss_fn, model, training_loader)
 
 
         running_vloss = 0.0
@@ -120,18 +157,12 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer, momentum=0
         # Track best performance, and save the model's state
         if avg_vloss < best_vloss:
             best_vloss = avg_vloss
-            model_path = 'model_{}_{}'.format(timestamp, epoch_number)
-            torch.save(model.state_dict(), model_path)
+            torch.save(model.state_dict(), checkpoints_folder)
 
         epoch_number += 1
 
-    # print when to finish
-    finish_time = datetime.datetime.now(hkt)
-    print(f'finish training at {finish_time} HKT.')
-
-
 if __name__ == "__main__":
-    # Parse the arguments
+    # Change the hyperpar ameters file name to the one you want to use
     hyperparams = Hyperparameters('hyperparameters_1016_0.yaml')
 
     # Call the train function with the parsed arguments
@@ -141,6 +172,6 @@ if __name__ == "__main__":
         gpu=hyperparams.gpu,
         checkpoints_folder=hyperparams.checkpoints_folder,
         batch_size=hyperparams.batch_size,
-        optimizer=hyperparams.optimizer,
+        optimizer_name=hyperparams.optimizer,
         momentum=hyperparams.momentum,
     )
