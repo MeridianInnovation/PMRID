@@ -1,0 +1,6 @@
+learning_rate: 2e-5
+batch_size: 64
+epochs: 20
+optimizer: SGD
+momentum: 0.0
+checkpoints_folder: checkpoints
