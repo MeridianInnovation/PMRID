@@ -1,4 +1,5 @@
 import tensorflow as tf
+import os
 
 # Function to decode and preprocess images
 # This function reads the image from the file path, decodes it, and preprocesses it
@@ -16,13 +17,39 @@ def decode_image(file_path):
 # This function takes the path to a folder containing images
 # It creates a dataset from the images in the folder
 # The function returns the dataset
-def create_dataset(clean_folder_dir, noisy_folder_dir):
+def create_dataset(noisy_folder_dir, clean_folder_dir):
     # List files in the folder based on extension
-    clean_files = tf.data.Dataset.list_files(clean_folder_dir + '/*.png')
     noisy_files = tf.data.Dataset.list_files(noisy_folder_dir + '/*.png')
+    clean_files = tf.data.Dataset.list_files(clean_folder_dir + '/*.png')
     
     # Decode images
-    clean_dataset = clean_files.map(lambda x: decode_image(x))
     noisy_dataset = noisy_files.map(lambda x: decode_image(x))
+    clean_dataset = clean_files.map(lambda x: decode_image(x))
 
-    return clean_dataset, noisy_dataset
+    return noisy_dataset, clean_dataset,
+
+# Function to prepare data loaders
+# This function prepares the training and validation data loaders
+# It takes the root directory, batch size, as input
+# It returns the training and validation data loaders
+def prepare_dataloaders(root_dir, batch_size):
+    # Define the paths to the clean and noisy folders for training and validation
+    train_noisy_folder_dir = os.path.join(root_dir, 'images_thermal_train_resized_noisy')
+    train_clean_folder_dir = os.path.join(root_dir, 'images_thermal_train_resized_clean')
+    val_noisy_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_noisy')
+    val_clean_folder_dir = os.path.join(root_dir, 'images_thermal_val_resized_clean')
+    
+    # Create Dataset for training and validation
+    train_noisy_dataset, train_clean_dataset = create_dataset(train_noisy_folder_dir, train_clean_folder_dir)
+    train_noisy_dataset = train_noisy_dataset.batch(batch_size)
+    train_clean_dataset = train_clean_dataset.batch(batch_size)
+    # validation dataset
+    val_noisy_dataset, val_clean_dataset = create_dataset(val_noisy_folder_dir, val_clean_folder_dir)
+    val_noisy_dataset = val_noisy_dataset.batch(batch_size)
+    val_clean_dataset = val_clean_dataset.batch(batch_size)
+
+    # zipping the datasets
+    train_dataset = tf.data.Dataset.zip((train_noisy_dataset, train_clean_dataset))
+    val_dataset = tf.data.Dataset.zip((val_noisy_dataset, val_clean_dataset))
+
+    return train_dataset, val_dataset
