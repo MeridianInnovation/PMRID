@@ -70,13 +70,12 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momen
 
 if __name__ == "__main__":
     # Parse the arguments
-    hyperparams = Hyperparameters('hyperparameters_1016_0.yaml')
+    hyperparams = Hyperparameters('hyperparameters_sample.yaml')
 
     # Call the train function with the parsed arguments
     train(
         epochs=hyperparams.epochs,
         lr=hyperparams.learning_rate,
-        gpu=hyperparams.gpu,
         checkpoints_folder=hyperparams.checkpoints_folder,
         batch_size=hyperparams.batch_size,
         optimizer_name=hyperparams.optimizer,
