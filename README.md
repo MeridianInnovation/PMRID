@@ -1,5 +1,5 @@
 # Practical Deep Raw Image Denoising on Mobile Devices
-`The denoisers repo is [here](https://github.com/MeridianInnovation/Denoisers/blob/main/README.md). The repo contains the information about all the models.`
+The denoisers repo is [here](https://github.com/MeridianInnovation/Denoisers/blob/main/README.md). The repo contains the information about all the models.
 
 The Tensorflow and Pytorch Reimplementation based the [Practical Deep Raw Image Denoising on Mobile Devices - ECCV 2020](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
 
