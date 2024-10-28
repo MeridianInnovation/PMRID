@@ -93,6 +93,10 @@ if __name__ == '__main__':
     print(f'Training data loader: {training_loader}')
     print(f'Validation data loader: {validation_loader}')
 
+    # print the length of the training and validation dataset
+    print(f'Length of trauining loader: {len(training_loader.dataset)}')
+    print(f'Length of validation loader: {len(validation_loader.dataset)}')
+
     # Print the first batch of data
     for noisy_images, clean_images in training_loader:
         print(f'Noisy images: {noisy_images.shape}')
