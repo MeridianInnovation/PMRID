@@ -11,7 +11,7 @@ from torch.utils.tensorboard import SummaryWriter
 from utils.hyperparameters import Hyperparameters
 import torch_optimizer as optim
 
-from utils.utils_torch import calculate_psnr, calculate_ssim
+from utils.utils_torch import calculate_psnr_metric, calculate_ssim_metric
 
 # Define the training loop
 def train_one_epoch(epoch_index, tb_writer, optimizer, model, 
@@ -157,8 +157,8 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
                 # Accumulate the validation loss
                 running_vloss += vloss
                 # Calculate the PSNR and SSIM for the batch
-                running_psnr += calculate_psnr(voutputs, vlabels).item()
-                running_ssim += calculate_ssim(voutputs, vlabels).item()
+                running_psnr += calculate_psnr_metric(voutputs, vlabels).item()
+                running_ssim += calculate_ssim_metric(voutputs, vlabels)
 
         avg_vloss = running_vloss / (i + 1)
         # calculate the average ssim and psnr
