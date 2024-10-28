@@ -83,6 +83,46 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model,
 
     return last_loss
 
+# Define the save checkpoint function
+def save_checkpoint(model, checkpoints_folder, timestamp, epoch_number, best_vloss):
+    """
+    Save the model checkpoint.
+
+    Args:
+        model: The model object.
+        checkpoints_folder: The directory to save the model.
+        timestamp: The timestamp to use in the filename.
+        epoch_number: The epoch number to use in the filename.
+        best_vloss: The best validation loss.
+
+    Returns:
+        None
+    """
+
+    model_path = 'model_{}_{}'.format(timestamp, epoch_number)
+    model_full_path = os.path.join(checkpoints_folder, model_path)
+    torch.save(model.state_dict(), model_full_path)
+    print(f'  Saved model at {model_full_path} with validation loss {best_vloss}')
+
+# Save an entire model
+def save_entire_model(model, timestamp, epoch_number):
+    """
+    Save the entire model.
+
+    Args:
+        model: The model object.
+        timestamp: The timestamp to use in the filename.
+        epoch_number: The epoch number to use in the filename.
+
+    Returns:
+        None
+    """
+    models_folder = 'models/trained_models'
+    final_path = 'final model_{}_{}.pth'.format(timestamp, epoch_number)
+    final_model_path = os.path.join(models_folder, final_path)
+    torch.save(model, final_model_path)
+    print(f'  Saved final model at {final_model_path}')
+
 # Define the train function
 def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0.0):
     """
@@ -192,12 +232,14 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
         # Track best performance, and save the model's state
         if avg_vloss < best_vloss:
             best_vloss = avg_vloss
-            model_path = 'model_{}_{}'.format(timestamp, epoch_number)
-            model_full_path = os.path.join(checkpoints_folder, model_path)
-            torch.save(model.state_dict(), model_full_path)
-            print(f'  Saved model at {model_path} with validation loss {best_vloss}')
+            # Save the model checkpoint
+            save_checkpoint(model, checkpoints_folder, timestamp, epoch_number, best_vloss)
 
         epoch_number += 1
+
+    # Save the final model entirely
+    save_entire_model(model, timestamp, epoch_number)
+
 
 if __name__ == "__main__":
     # Change the hyperpar ameters file name to the one you want to use
