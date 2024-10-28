@@ -45,6 +45,10 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model,
     # Here, we use enumerate(training_loader) instead of
     # iter(training_loader) so that we can track the batch
     # index and do some intra-epoch reporting
+    total_samples = len(training_loader.dataset)
+    total_interations = total_samples // batch_size
+    # Log the total number of iterations
+    print('Total iterations: {}'.format(total_interations))
     for i, data in enumerate(training_loader):
         # Every data instance is an input + label pair
         inputs, labels = data
@@ -65,10 +69,10 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model,
 
         # Gather data and report
         running_loss += loss.item()
-        total_samples = len(training_loader.dataset)
-        total_interations = total_samples // batch_size
-        # Log the total number of iterations
-        print('Total iterations: {}'.format(total_interations))
+        # total_samples = len(training_loader.dataset)
+        # total_interations = total_samples // batch_size
+        # # Log the total number of iterations
+        # print('Total iterations: {}'.format(total_interations))
         logging_interval = total_interations // 10
         if i % logging_interval == logging_interval - 1:
             last_loss = running_loss / logging_interval # loss per batch
