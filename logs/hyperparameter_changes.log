@@ -9,3 +9,17 @@
   - Reason: No reason given.
 - Changed 'optimizer' from 'adam' to 'sgd'
   - Reason: Changed optimizer to converge slower.
+
+
+## 2024-10-28
+- Changed `batch_size` to 64
+  - Reason: Decreased training time.
+- Changed `learning_rate` to 1e-4
+  - Reason: 2e-5 was too low to converge.
+- unchanged `num_epochs` to 1
+  - Reason: No reason given.
+- Changed 'optimizer' to adam
+  - Reason: adam is faster than sgd.
+- Changed from tf model to pytorch model
+  - Reason: l1 loss is 0.08895214647054672 for validation set after one epoch.
+  - Reason: valid PSNR 67.20069885253906 SSIM 0.9997662828617746

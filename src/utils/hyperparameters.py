@@ -23,6 +23,8 @@ class Hyperparameters:
         
         # Set the hyperparameters
         self.learning_rate = config['learning_rate']
+        # convert the learning rate to float
+        self.learning_rate = float(self.learning_rate)
         self.batch_size = config['batch_size']
         self.epochs = config['epochs']
         self.optimizer = config['optimizer']
@@ -31,6 +33,8 @@ class Hyperparameters:
 
     def print_params(self):
         print(f"Learning Rate: {self.learning_rate}")
+        # log the type of learning rate
+        print(type(self.learning_rate))
         print(f"Batch Size: {self.batch_size}")
         print(f"Epochs: {self.epochs}")
         print(f"Optimizer: {self.optimizer}")

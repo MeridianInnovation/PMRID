@@ -13,7 +13,14 @@ The denoisers repo is [here](https://github.com/MeridianInnovation/Denoisers/blo
 In a virtual environment, install all the necessary packages and libraries by running pip install -r requirements.txt at the root directory
 
 ### Model
-`The difference with the original PMRID is to use three encoders and decoders because of smaller resolution ? . Compared with the original PMRID model design, we delete encoder stage 4 because it is the deepest. Then we delete decoder stage 1 because of corresponding skip connection.` More information can be found at [here](https://github.com/MeridianInnovation/Denoisers).
+`The difference with the original PMRID is to use three encoders and decoders because of smaller resolution ?`
+
+`Compared with the original PMRID model design, we delete encoder stage 4 because it is the deepest. Then we delete decoder stage 1 because of corresponding skip connection.` 
+
+More information can be found at [here](https://github.com/MeridianInnovation/Denoisers).
+
+### Project Architecture
+The project has two versions. One is the model developed in tensorflow (.py files). Another is the model developed in pytorch (*_torch.py files). As of today (2024-10-28), the pytorch model is more well-developed.
 
 ### Dataset
 We use FLIR dataset and find it [here](https://drive.google.com/file/d/1XFL-vH2puregx8_ApuYVxDrQLzHE9RTQ/view?usp=drive_link). The trainning set has around 110,000 pairs of images (70%). The validation set has around 11,000 pairs of images (7%). The testing set has around 37,000 pairs of images (23%). You can use a reducer script [here](https://github.com/danielliu-meridian/image-processing/blob/main/scripts/image_dataset_reducer.py) to reduce the size of dataset by 2, 4 or 8. You can find a dataset with reducer size 8 [here](https://drive.google.com/file/d/1kWvuOn_u4gQKIUjpKU4fzdPZWWEntJzH/view?usp=sharing).
