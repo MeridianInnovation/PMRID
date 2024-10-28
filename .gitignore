@@ -3,8 +3,11 @@
 !/data/README.md
 
 # Ignore saved models
-/saved_models/*
-!/saved_models/.gitkeep
+/models/trained_models/*
+
+# Ignore checkpoints
+/checkpoints/*
+!/checkpoints/README.md
 
 # Ignore compiled files
 __pycache__/

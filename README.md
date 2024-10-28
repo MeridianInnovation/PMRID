@@ -1,6 +1,8 @@
 # Practical Deep Raw Image Denoising on Mobile Devices
 The denoisers repo is [here](https://github.com/MeridianInnovation/Denoisers/blob/main/README.md). `The repo contains the information about all the models.`
 
+We use .ipynb in colab to perform computation (inference and occasionally training). For the model in pytorch and tensorflow, all the classes, functions and testing are implemented in .py files in this github repo.
+
 ## Content
   - [Preparation](#preparation)
   - [Training](#training)
@@ -20,7 +22,24 @@ In a virtual environment, install all the necessary packages and libraries by ru
 More information can be found at [here](https://github.com/MeridianInnovation/Denoisers).
 
 ### Project Architecture
-The project has two versions. One is the model developed in tensorflow (.py files). Another is the model developed in pytorch (*_torch.py files). As of today (2024-10-28), the pytorch model is more well-developed.
+The project has two versions. One is the model developed in tensorflow (.py files). Another is the model developed in pytorch (*_torch.py files). As of today (2024-10-28), the pytorch model is more well-developed. The general structure is below:
+
+```
+├── checkpoints # Directory for saving model checkpoints
+├── configs # Configuration files for experiments of hyperparameters
+├── data # Pre-processed dataset
+├── logs # Logs for hyperparameter changes
+├── models # Pre-trained and trained models
+├── runs # TensorBoard or other run logs
+├── src # Source code
+│ ├── data # Data loading and preprocessing scripts
+│ ├── model # Model architecture and related code
+│ ├── train # Training scripts and routines
+│ └── utils # Utility functions and helpers
+├── tests # test cases
+└── requirements.txt # Python dependencies
+```
+
 
 ### Dataset
 We use FLIR dataset and find it [here](https://drive.google.com/file/d/1XFL-vH2puregx8_ApuYVxDrQLzHE9RTQ/view?usp=drive_link). The trainning set has around 110,000 pairs of images (70%). The validation set has around 11,000 pairs of images (7%). The testing set has around 37,000 pairs of images (23%). You can use a reducer script [here](https://github.com/danielliu-meridian/image-processing/blob/main/scripts/image_dataset_reducer.py) to reduce the size of dataset by 2, 4 or 8. You can find a dataset with reducer size 8 [here](https://drive.google.com/file/d/1kWvuOn_u4gQKIUjpKU4fzdPZWWEntJzH/view?usp=sharing).
