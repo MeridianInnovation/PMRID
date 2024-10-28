@@ -5,14 +5,15 @@ from data.data_utils_torch import prepare_dataloaders
 import os
 import datetime
 import pytz
-from utils.utils import ssim_loss
+# import the loss function here
+from utils.utils_torch import loss_fn_f1 as loss_fn
 from torch.utils.tensorboard import SummaryWriter
 from utils.hyperparameters import Hyperparameters
 import torch_optimizer as optim
 
 # Define the training loop
 def train_one_epoch(epoch_index, tb_writer, optimizer, model, 
-                    training_loader, loss_fn, device):
+                    training_loader, device):
     """
     Train the model for one epoch.
 
@@ -22,7 +23,6 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model,
         optimizer: The optimizer object.
         model: The model object.
         training_loader: The training data loader.
-        loss_fn: The loss function.
         device: The device to use.
 
     Returns:
@@ -114,9 +114,6 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
     epoch_number = 0
     best_vloss = float('inf') # Set the best validation loss to infinity
 
-    # Define the loss function
-    loss_fn = ssim_loss
-
     for epoch in range(epochs):
         print('EPOCH {}:'.format(epoch_number + 1))
 
@@ -125,7 +122,7 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
         # Set the model to training mode
         model.train(True)
         avg_loss = train_one_epoch(epoch_number, writer, optimizer, 
-                                    loss_fn, model, training_loader, device)
+                                  model, training_loader, device)
         
         # Validation Phase
         running_vloss = 0.0
