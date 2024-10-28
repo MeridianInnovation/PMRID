@@ -4,6 +4,8 @@ from skimage.metrics import structural_similarity as ssim
 import numpy as np
 
 # Loss functions
+
+# Define the L1 loss function
 loss_fn_f1 = torch.nn.L1Loss()
 # def loss_fn_f1(pred: torch.Tensor, label: torch.Tensor):
 #     B = pred.shape[0]
@@ -66,6 +68,9 @@ def calculate_ssim_metric(output, target, data_range=255):
         ssim_values.append(ssim_value)
     
     return np.mean(ssim_values)
+
+# Learning rate scheduler
+
 
 if __name__ == '__main__':
     # Set the seed 
