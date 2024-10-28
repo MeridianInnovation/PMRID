@@ -1,14 +1,16 @@
 import torch
 
-# loss_fn_f1 = torch.nn.L1Loss()
+loss_fn_f1 = torch.nn.L1Loss()
 
 import torch
 import torch.nn.functional as F
 
-def loss_fn_f1(pred: torch.Tensor, label: torch.Tensor):
-    B = pred.shape[0]
-    L1 = F.l1_loss(pred, label, reduction='none').view(B, -1).mean(dim=1)
-    return L1.mean()
+# def loss_fn_f1(pred: torch.Tensor, label: torch.Tensor):
+#     B = pred.shape[0]
+#     ABS = torch.abs(pred - label)
+#     Reshaped = torch.reshape(ABS, (B, -1))
+#     L1 = Reshaped.mean(dim=1)
+#     return L1.mean()
 
 if __name__ == '__main__':
     # Set the seed 
