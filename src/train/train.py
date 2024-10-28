@@ -16,7 +16,7 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momen
     print("Using GPU: ", gpu)
 
     # Define the root path for the dataset
-    root_dir = 'data/'
+    root_dir = 'data'
     # Create the training and validation data loaders
     train_dataset, val_dataset = prepare_dataloaders(root_dir, batch_size)
 
@@ -70,13 +70,12 @@ def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momen
 
 if __name__ == "__main__":
     # Parse the arguments
-    hyperparams = Hyperparameters('hyperparameters_1016_0.yaml')
+    hyperparams = Hyperparameters('hyperparameters_sample.yaml')
 
     # Call the train function with the parsed arguments
     train(
         epochs=hyperparams.epochs,
         lr=hyperparams.learning_rate,
-        gpu=hyperparams.gpu,
         checkpoints_folder=hyperparams.checkpoints_folder,
         batch_size=hyperparams.batch_size,
         optimizer_name=hyperparams.optimizer,

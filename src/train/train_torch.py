@@ -8,6 +8,7 @@ import pytz
 from utils.utils import ssim_loss
 from torch.utils.tensorboard import SummaryWriter
 from utils.hyperparameters import Hyperparameters
+import torch_optimizer as optim
 
 # Define the training loop
 def train_one_epoch(epoch_index, tb_writer, optimizer, model, 
@@ -92,11 +93,16 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     elif optimizer_name == 'sgd' or optimizer_name == 'SGD':
         optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum)
+    elif optimizer_name == 'yogi' or optimizer_name == 'Yogi':
+        # Yogi optimizer is not available in PyTorch, we use torch-optimizer
+        # Yogi is a variant of Adam that uses a different update rule
+        # It solves the problem of Adam's slow convergence or divergence when the learning rate is high
+        optimizer = optim.Yogi(model.parameters(), lr=lr)
     else:
         raise ValueError('Invalid optimizer: {}'.format(optimizer))
 
     # Define the root path for the dataset
-    root_dir = 'data/'
+    root_dir = 'data'
     # Create the training and validation data loaders
     training_loader, validation_loader = prepare_dataloaders(root_dir, batch_size)
 
@@ -159,7 +165,7 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
 
 if __name__ == "__main__":
     # Change the hyperpar ameters file name to the one you want to use
-    hyperparams = Hyperparameters('hyperparameters_1016_0.yaml')
+    hyperparams = Hyperparameters('hyperparameters_sample.yaml')
 
     # Call the train function with the parsed arguments
     train(
