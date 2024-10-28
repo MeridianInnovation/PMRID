@@ -128,7 +128,7 @@ class Network(nn.Module):
     def __init__(self):
         super().__init__()
 
-        self.conv0 = Conv2D(in_channels=4, out_channels=16, kernel_size=3, padding=1, stride=1, is_seperable=False, has_relu=True)
+        self.conv0 = Conv2D(in_channels=1, out_channels=16, kernel_size=3, padding=1, stride=1, is_seperable=False, has_relu=True)
         self.enc1 = EncoderStage(in_channels=16, out_channels=64, num_blocks=2)
         self.enc2 = EncoderStage(in_channels=64, out_channels=128, num_blocks=2)
         self.enc3 = EncoderStage(in_channels=128, out_channels=256, num_blocks=4)
@@ -139,7 +139,7 @@ class Network(nn.Module):
         self.dec3 = DecoderStage(in_channels=32, skip_in_channels=16, out_channels=16)
 
         self.out0 = DecoderBlock(in_channels=16, out_channels=16, kernel_size=3)
-        self.out1 = Conv2D(in_channels=16, out_channels=4, kernel_size=3, stride=1, padding=1, is_seperable=False, has_relu=False)
+        self.out1 = Conv2D(in_channels=16, out_channels=1, kernel_size=3, stride=1, padding=1, is_seperable=False, has_relu=False)
 
     def forward(self, inp):
 
