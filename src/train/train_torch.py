@@ -1,17 +1,23 @@
-from model.model_torch import Network
+import os
+# Get the current working directory
+current_directory = os.getcwd()
+# Print the current working directory
+print("Current Directory:", current_directory)
+
+from src.model.model_torch import Network
 # import pytorch now
 import torch
-from data.data_utils_torch import prepare_dataloaders
+from src.data.data_utils_torch import prepare_dataloaders
 import os
 import datetime
 import pytz
 # import the loss function here
-from utils.utils_torch import loss_fn_f1 as loss_fn
+from src.utils.utils_torch import loss_fn_f1 as loss_fn
 from torch.utils.tensorboard import SummaryWriter
-from utils.hyperparameters import Hyperparameters
+from src.utils.hyperparameters import Hyperparameters
 import torch_optimizer as optim
 
-from utils.utils_torch import calculate_psnr_metric, calculate_ssim_metric
+from src.utils.utils_torch import calculate_psnr_metric, calculate_ssim_metric
 
 # Define the training loop
 def train_one_epoch(epoch_index, tb_writer, optimizer, model, 
@@ -61,6 +67,8 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model,
         running_loss += loss.item()
         total_samples = len(training_loader.dataset)
         total_interations = total_samples // batch_size
+        # Log the total number of iterations
+        print('Total iterations: {}'.format(total_interations))
         logging_interval = total_interations // 10
         if i % logging_interval == logging_interval - 1:
             last_loss = running_loss / logging_interval # loss per batch
