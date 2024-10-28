@@ -1,0 +1,1 @@
+The checkpoints for the best model will be saved to drive when we have something real
