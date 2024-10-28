@@ -5,14 +5,17 @@ from data.data_utils_torch import prepare_dataloaders
 import os
 import datetime
 import pytz
-from utils.utils import ssim_loss
+# import the loss function here
+from utils.utils_torch import loss_fn_f1 as loss_fn
 from torch.utils.tensorboard import SummaryWriter
 from utils.hyperparameters import Hyperparameters
 import torch_optimizer as optim
 
+from utils.utils_torch import calculate_psnr_metric, calculate_ssim_metric
+
 # Define the training loop
 def train_one_epoch(epoch_index, tb_writer, optimizer, model, 
-                    training_loader, loss_fn, device):
+                    training_loader, device, batch_size):
     """
     Train the model for one epoch.
 
@@ -22,8 +25,8 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model,
         optimizer: The optimizer object.
         model: The model object.
         training_loader: The training data loader.
-        loss_fn: The loss function.
         device: The device to use.
+        batch_size: The batch size.
 
     Returns:
         The average loss per batch.
@@ -56,8 +59,11 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model,
 
         # Gather data and report
         running_loss += loss.item()
-        if i % 1000 == 999:
-            last_loss = running_loss / 1000 # loss per batch
+        total_samples = len(training_loader.dataset)
+        total_interations = total_samples // batch_size
+        logging_interval = total_interations // 10
+        if i % logging_interval == logging_interval - 1:
+            last_loss = running_loss / logging_interval # loss per batch
             print('  batch {} loss: {}'.format(i + 1, last_loss))
             tb_x = epoch_index * len(training_loader) + i + 1
             tb_writer.add_scalar('Loss/train', last_loss, tb_x)
@@ -111,12 +117,10 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
     timestamp = datetime.datetime.now(hkt)
     writer = SummaryWriter('runs/fashion_trainer_{}'.format(timestamp))
     
+    # Per-Epoch Training Loop
     epoch_number = 0
     best_vloss = float('inf') # Set the best validation loss to infinity
-
-    # Define the loss function
-    loss_fn = ssim_loss
-
+    # Loop over the epochs
     for epoch in range(epochs):
         print('EPOCH {}:'.format(epoch_number + 1))
 
@@ -125,10 +129,15 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
         # Set the model to training mode
         model.train(True)
         avg_loss = train_one_epoch(epoch_number, writer, optimizer, 
-                                    loss_fn, model, training_loader, device)
+                                  model, training_loader, device, batch_size)
         
         # Validation Phase
+        # Initialize the running loss. This will accumulate the loss per batch
         running_vloss = 0.0
+        # Initialize the running PSNR and SSIM
+        running_psnr = 0.0
+        running_ssim = 0.0
+
         # Set the model to evaluation mode, disabling dropout and using population
         # statistics for batch normalization.
         model.eval()
@@ -139,12 +148,27 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
                 vinputs, vlabels = vdata
                 # Move the data to the device
                 vinputs, vlabels = vinputs.to(device), vlabels.to(device)
+
+                # Make predictions for this batch
+                # or forward pass
                 voutputs = model(vinputs)
-                vloss = loss_fn(voutputs, vlabels)
+                vloss = loss_fn(voutputs, vlabels) # Calculate the validation loss
+                
+                # Accumulate the validation loss
                 running_vloss += vloss
+                # Calculate the PSNR and SSIM for the batch
+                running_psnr += calculate_psnr_metric(voutputs, vlabels).item()
+                running_ssim += calculate_ssim_metric(voutputs, vlabels)
 
         avg_vloss = running_vloss / (i + 1)
+        # calculate the average ssim and psnr
+        avg_psnr = running_psnr / (i + 1)
+        avg_ssim = running_ssim / (i + 1)
         print('LOSS train {} valid {}'.format(avg_loss, avg_vloss))
+        # new line
+        print('')
+        # Log the evluation metrics such as ssim, psnr, etc.
+        print('valid PSNR {} SSIM {}'.format(avg_psnr, avg_ssim)) 
 
         # Log the running loss averaged per batch
         # for both training and validation

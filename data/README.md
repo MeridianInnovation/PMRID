@@ -1,4 +1,4 @@
-For training and testing, your directory structure should look like this:
+This is a directory for dataset. For training and testing, your directory structure should look like this:
 
 `reduced_dataset_1_8` <br/>
  `├──images_thermal_train_resized_clean`  <br/>
