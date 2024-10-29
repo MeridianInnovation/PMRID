@@ -6,8 +6,7 @@ We use .ipynb in colab to perform computation (inference and occasionally traini
 ## Content
   - [Preparation](#preparation)
   - [Training](#training)
-  - [Inference](#inference)
-  - [Result](#result)
+  - [Inference](#inference-and-result)
   - [References](#references)
 
 ## Preparation
@@ -26,18 +25,16 @@ The project has two versions. One is the model developed in tensorflow (.py file
 
 ```
 ├── checkpoints # Directory for saving model checkpoints
-├── configs # Configuration files for experiments of hyperparameters
+├── configs # Configuration files for hyperparameters
 ├── data # Pre-processed dataset
 ├── logs # Logs for hyperparameter changes
 ├── models # Pre-trained and trained models
-├── runs # TensorBoard or other run logs
 ├── src # Source code
 │ ├── data # Data loading and preprocessing scripts
-│ ├── model # Model architecture and related code
-│ ├── train # Training scripts and routines
-│ └── utils # Utility functions and helpers
-├── tests # test cases
-└── requirements.txt # Python dependencies
+│ ├── model # Model architecture
+│ ├── train # Training scripts
+│ └── utils # Utility functions
+└── tests # test cases
 ```
 
 
@@ -53,13 +50,11 @@ There are two ways to train the model. One is locally, another is colab.
 
 - Run file ipynb to train model.
 
-## Inference
+## Inference and Result
 
 Clone this repository and run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
 
-## Result
-
-This result acquired after training 20 epochs.
+The result in colab was acquired after training 20 epochs.
 
 ## References
 [1] [Practical Deep Raw Image Denoising on Mobile Devices - Paper](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
