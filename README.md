@@ -1,7 +1,7 @@
 # Practical Deep Raw Image Denoising on Mobile Devices
 The denoisers repo is [here](https://github.com/MeridianInnovation/Denoisers/blob/main/README.md). `The repo contains the information about all the models.`
 
-We use .ipynb in colab to perform computation (inference and occasionally training). For the models, all the classes, functions and testing are implemented in .py files in this github repo.
+We use .ipynb in colab to perform computation (inference and occasionally training). All the classes, functions and testing are implemented in .py files in this github repo.
 
 ## Content
   - [Preparation](#preparation)
