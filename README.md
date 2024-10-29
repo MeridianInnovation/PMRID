@@ -62,6 +62,8 @@ Clone this repository and run on [![Colab](https://colab.research.google.com/ass
 This result acquired after training 20 epochs.
 
 ## References
-[1] [Practical Deep Raw Image Denoising on Mobile Devices - ECCV 2020](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
+[1] [Practical Deep Raw Image Denoising on Mobile Devices - Paper](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
 
-[2] [FLIR Dataset - Kaggle](https://www.kaggle.com/datasets/deepnewbie/flir-thermal-images-dataset)
+[2] [Loss Functions for Image Restoration with Neural Networks - Loss](https://research.nvidia.com/sites/default/files/pubs/2017-03_Loss-Functions-for/NN_ImgProc.pdf)
+
+[3] [FLIR Kaggle - Dataset](https://www.kaggle.com/datasets/deepnewbie/flir-thermal-images-dataset)
