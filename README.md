@@ -44,17 +44,18 @@ We use FLIR dataset and find it [here](https://drive.google.com/file/d/1XFL-vH2p
 ## Training
 There are two ways to train the model. One is locally, another is colab.
 
-- Load pre-processed dataset from [drive](https://drive.google.com/file/d/1kWvuOn_u4gQKIUjpKU4fzdPZWWEntJzH/view)
+- Load pre-processed dataset from [drive](https://drive.google.com/file/d/1kWvuOn_u4gQKIUjpKU4fzdPZWWEntJzH/view).
 
-- Change path variables in Denoiser.ipynb
-
-- Run file ipynb to train model.
+- At project root, run [train_torch.py](/src/train/train_torch.py) like below to train model. You can change hyperparameters by creating a new file in [configs](/configs/) and changing the argument of the Hyperparameters object in lines 246 of the training script.
+```
+python -m src.train.train_torch
+```
 
 ## Inference and Result
 
 Clone this repository and run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
 
-The result in colab was acquired after training 20 epochs.
+The result in colab was acquired after training 1 epoch.
 
 ## References
 [1] [Practical Deep Raw Image Denoising on Mobile Devices - Paper](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
