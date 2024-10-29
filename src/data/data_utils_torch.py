@@ -7,6 +7,7 @@ import torchvision.transforms as transforms
 def decode_image(file_path):
     """
       Function to decode and preprocess images.
+      when converting the image to a tensor, we normalize the image from 0-255 to 0-1.
 
       Args:
         file_path: The path to the image file.
@@ -19,6 +20,7 @@ def decode_image(file_path):
     # Define the transformations to be applied to the image
     transform = transforms.Compose([
         transforms.Resize((120, 160)), # Resize the image to 120x160
+        # also normalize the image from 0-255 to 0-1
         transforms.ToTensor(), # Convert the image to a PyTorch Tensor (C x H x W)
         # transforms.Normalize(mean=[0.5], std=[0.5]) # Normalize the image
     ])
@@ -107,3 +109,13 @@ if __name__ == '__main__':
         print(f'Noisy images: {noisy_images.shape}')
         print(f'Clean images: {clean_images.shape}')
         break
+    
+    # Print the first noisy image in the first batch
+    noisy_image = noisy_images[0]
+    print(f'Noisy image shape: {noisy_image.shape}')
+    print(f'Noisy image: {noisy_image}')
+
+    # Print the first clean image in the first batch
+    clean_image = clean_images[0]
+    print(f'Clean image shape: {clean_image.shape}')
+    print(f'Clean image: {clean_image}')

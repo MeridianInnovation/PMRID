@@ -17,14 +17,14 @@ loss_fn_f1 = torch.nn.L1Loss()
 # Evaluation metrics
 
 # Define the PSNR metric
-def calculate_psnr_metric(output, target, max_pixel=255):
+def calculate_psnr_metric(output, target, max_pixel=1):
     """
       Calculate the Peak Signal-to-Noise Ratio (PSNR) for a batch of images.
     
       Args:
         output: The output image tensor.
         target: The target image tensor.
-        max_pixel: The maximum pixel value. (Default: 255)
+        max_pixel: The maximum pixel value. (Default: 1)
 
       Returns:
         The PSNR value.
@@ -39,14 +39,14 @@ def calculate_psnr_metric(output, target, max_pixel=255):
     return psnr
 
 # Define the SSIM metric
-def calculate_ssim_metric(output, target, data_range=255):
+def calculate_ssim_metric(output, target, data_range=1):
     """
       Calculate the Structural Similarity Index (SSIM) for a batch of images.
     
       Args:
         output: The output image tensor.
         target: The target image tensor.
-        data_range: The range of the pixel values (Default: 255)
+        data_range: The range of the pixel values (Default: 1)
 
       Returns:
         The SSIM value.
@@ -77,7 +77,8 @@ if __name__ == '__main__':
     torch.manual_seed(0)
     # Define the input and target tensors
     input_tensor = torch.randn(64, 1, 120, 160, requires_grad=True)
-    target_tensor = input_tensor.clone()
+    # make a target that is 90% similar to the input
+    target_tensor = input_tensor * 0.9
     # print(input_tensor)
     print('size:', input_tensor.size())
     # print(target_tensor)
