@@ -16,8 +16,8 @@ from src.utils.utils_torch import loss_fn_f1 as loss_fn
 from torch.utils.tensorboard import SummaryWriter
 from src.utils.hyperparameters import Hyperparameters
 import torch_optimizer as optim
-
 from src.utils.utils_torch import calculate_psnr_metric, calculate_ssim_metric
+import matplotlib.pyplot as plt
 
 # Define the training loop
 def train_one_epoch(epoch_index, tb_writer, optimizer, model, 
@@ -83,6 +83,7 @@ def train_one_epoch(epoch_index, tb_writer, optimizer, model,
 
     return last_loss
 
+
 # Define the save checkpoint function
 def save_checkpoint(model, checkpoints_folder, timestamp, epoch_number, best_vloss):
     """
@@ -104,6 +105,7 @@ def save_checkpoint(model, checkpoints_folder, timestamp, epoch_number, best_vlo
     torch.save(model.state_dict(), model_full_path)
     print(f'  Saved model at {model_full_path} with validation loss {best_vloss}')
 
+
 # Save an entire model
 def save_entire_model(model, timestamp, epoch_number):
     """
@@ -122,6 +124,45 @@ def save_entire_model(model, timestamp, epoch_number):
     final_model_path = os.path.join(models_folder, final_path)
     torch.save(model, final_model_path)
     print(f'  Saved final model at {final_model_path}')
+
+
+def plot_history(losses):
+    """
+    Plot the loss over the epochs.
+
+    Args:
+        losses: The losses dictionary that contains the training and validation losses.
+
+    Returns:
+        None
+    """
+    train_loss = losses['loss']
+    val_loss = losses['val_loss']
+
+    epochs = range(1, len(train_loss) + 1)
+
+    plt.figure(figsize=(10, 6))
+
+    # Plot training loss
+    plt.plot(epochs, train_loss, 'r-', label='Training Loss', marker='o')
+
+    # If validation loss exists, plot it
+    plt.plot(epochs, val_loss, 'b-', label='Validation Loss', marker='x')
+
+    # Add title and labels
+    plt.title('Training and Validation Loss Over Epochs', fontsize=16)
+    plt.xlabel('Epochs', fontsize=14)
+    plt.ylabel('Loss', fontsize=14)
+
+    # Add grid for better readability
+    plt.grid(True)
+
+    # Add legend
+    plt.legend(loc='upper right')
+
+    # Show the plot
+    plt.show()
+
 
 # Define the train function
 def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0.0):
@@ -172,6 +213,11 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
     # Per-Epoch Training Loop
     epoch_number = 0
     best_vloss = float('inf') # Set the best validation loss to infinity
+    # print the start time
+    print('Start time:', timestamp)
+    # define two lists to store the loss history
+    train_loss_history = []
+    val_loss_history = []
     # Loop over the epochs
     for epoch in range(epochs):
         print('EPOCH {}:'.format(epoch_number + 1))
@@ -229,6 +275,10 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
                         epoch_number + 1)
         writer.flush()
 
+        # Keep track of the training and validation losses for plotting the history
+        train_loss_history.append(avg_loss)
+        val_loss_history.append(avg_vloss)
+
         # Track best performance, and save the model's state
         if avg_vloss < best_vloss:
             best_vloss = avg_vloss
@@ -237,13 +287,21 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
 
         epoch_number += 1
 
+    # Print the end time
+    print('End time:', datetime.datetime.now(hkt))
+    # Print how long the training took
+    print('Training took:', datetime.datetime.now(hkt) - timestamp)
+
+    # plot the history
+    plot_history({'loss': train_loss_history, 'val_loss': val_loss_history})
+
     # Save the final model entirely
     save_entire_model(model, timestamp, epoch_number)
 
 
 if __name__ == "__main__":
     # Change the hyperpar ameters file name to the one you want to use
-    hyperparams = Hyperparameters('hyperparameters_sample.yaml')
+    hyperparams = Hyperparameters('hyperparameters_1029_0.yaml')
 
     # Call the train function with the parsed arguments
     train(
