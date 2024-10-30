@@ -55,7 +55,7 @@ python -m src.train.train_torch
 ```
 
 ### Learning rate Scheduler
-We use cosine scheduler for the project. The scheduler is used for CV mainly.
+We use cosine scheduler for the project. The scheduler is used for CV mainly. The implementation is [here](src/utils/scheduler_torch.py).
 
 ### Parameter Initialization
 
