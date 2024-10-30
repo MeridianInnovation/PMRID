@@ -64,7 +64,13 @@ We use cosine scheduler for the project. The scheduler is used for CV mainly. Th
 Thanks to Takao, according to the [article](https://research.nvidia.com/sites/default/files/pubs/2017-03_Loss-Functions-for/NN_ImgProc.pdf), `the mix` is better and will generate a `slightly higer psnr and ssim`. The paper claims it will do a better job to preserve edges as well. So we will implement the mix [here](). More details can be found at [Denoisers](https://github.com/MeridianInnovation/Denoisers).
 
 ### Hyperameters
-The batch size is either 32 or 64. The optimizer is Adam. The learning rate is 1e-2.
+The batch size is either 32 or 64. The optimizer is `Adam`. The learning rate is `1e-2`.
+
+For learning rate, based on our experiments, when reaching convergence, it is too slow to converge if lr is 1e-5. It is OK to have a constant learing rate as 1e-3 (a little bit slow but OK), but it will converge after epoch 8. 
+
+For optimizer, Adam is better than SGD without any momentum. If Adam fails to converge, we should try Yogi.
+
+The batch size is 32 now. Want to try 64 so the model has more sample to train during forward pass and Backpropagation ? We will do the experiment now (2024-10-30).
 
 ### Larger Datasize & Data Augmentation
 Can we reduce our losses during training by introducing a larger datasize ?
