@@ -53,9 +53,24 @@ python -m src.train.train_torch
 
 ## Inference and Result
 
-Clone this repository and run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
+Run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
 
-The result in colab was acquired after training 1 epoch.
+The result below in colab was acquired after training 10 epoch, the metrics are `28.7 psnr`, `0.818 ssim`, the val `l1 loss` is `0.025`, almost converge when we reach 9 epochs. 
+
+<div style="display: flex; justify-content: space-between;">
+    <div style="text-align: center;">
+        <p><strong>Degraded</strong></p>
+        <img src="images/model_2024-10-29/flir_noisy_image_example_degraded.png" alt="Image 2" width="300"/>
+    </div>
+    <div style="text-align: center;">
+        <p><strong>Restored</strong></p>
+        <img src="images/model_2024-10-29/flir_noisy_image_example_restored.png" alt="Image 3" width="300"/>
+    </div>
+        <div style="text-align: center;">
+        <p><strong>Original</strong></p>
+        <img src="images/model_2024-10-29/flir_noisy_image_example_original.png" alt="Image 3" width="300"/>
+    </div>
+</div>
 
 ## References
 [1] [Practical Deep Raw Image Denoising on Mobile Devices - Paper](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
