@@ -12,12 +12,15 @@ import os
 import datetime
 import pytz
 # import the loss function here
+# this may not be a good practice of defining the loss function
+# ??? need to check
 from src.utils.utils_torch import loss_fn_f1 as loss_fn
 from torch.utils.tensorboard import SummaryWriter
 from src.utils.hyperparameters import Hyperparameters
 import torch_optimizer as optim
 from src.utils.utils_torch import calculate_psnr_metric, calculate_ssim_metric
 import matplotlib.pyplot as plt
+from src.utils.scheduler_torch import CosineScheduler
 
 # Define the training loop
 def train_one_epoch(epoch_index, tb_writer, optimizer, model, 
@@ -199,6 +202,10 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
         optimizer = optim.Yogi(model.parameters(), lr=lr)
     else:
         raise ValueError('Invalid optimizer: {}'.format(optimizer))
+    
+    # Define the scheduler
+    # Define the hyperparameters for the scheduler basd on previous experiments
+    scheduler = CosineScheduler(max_update=5, base_lr=lr, final_lr=lr * 0.01)
 
     # Define the root path for the dataset
     root_dir = 'data'
@@ -221,6 +228,8 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
     # Loop over the epochs
     for epoch in range(epochs):
         print('EPOCH {}:'.format(epoch_number + 1))
+        # print the lr for the epoch
+        print('Learning rate:', optimizer.param_groups[0]['lr'])
 
         # Trainning Phase
         # Make sure gradient tracking is on, and do a pass over the data
@@ -287,6 +296,11 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
 
         epoch_number += 1
 
+        # Update the learning rate after each epoch using the scheduler
+        lr = scheduler(epoch_number)
+        for param_group in optimizer.param_groups:
+            param_group['lr'] = lr
+
     # Print the end time
     print('End time:', datetime.datetime.now(hkt))
     # Print how long the training took
@@ -301,7 +315,7 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
 
 if __name__ == "__main__":
     # Change the hyperpar ameters file name to the one you want to use
-    hyperparams = Hyperparameters('hyperparameters_1029_0.yaml')
+    hyperparams = Hyperparameters('hyperparameters_1030_0.yaml')
 
     # Call the train function with the parsed arguments
     train(
