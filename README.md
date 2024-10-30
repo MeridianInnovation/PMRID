@@ -7,6 +7,7 @@ We use .ipynb in colab to perform computation (inference and occasionally traini
   - [Preparation](#preparation)
   - [Training](#training)
   - [Inference](#inference-and-result)
+  - [Improvement](#improvement)
   - [References](#references)
 
 ## Preparation
@@ -54,13 +55,38 @@ There are two ways to train the model. One is locally, another is colab.
 python -m src.train.train_torch
 ```
 
+## Improvement
+
 ### Learning rate Scheduler
 We use cosine scheduler for the project. The scheduler is used for CV mainly. The implementation is [here](src/utils/scheduler_torch.py).
 
+### Loss function
+Thanks to Takao, according to the [article](https://research.nvidia.com/sites/default/files/pubs/2017-03_Loss-Functions-for/NN_ImgProc.pdf), `the mix` is better and will generate a `slightly higer psnr and ssim`. The paper claims it will do a better job to preserve edges as well. So we will implement the mix [here](). More details can be found at [Denoisers](https://github.com/MeridianInnovation/Denoisers).
+
+### Hyperameters
+The batch size is either 32 or 64. The optimizer is `Adam`. The learning rate is `1e-2`.
+
+#### Learning rate
+For learning rate, based on our experiments, when reaching convergence, it is too slow to converge if lr is 1e-5. It is OK to have a constant learing rate as 1e-3 (a little bit slow but OK), but it will converge after epoch 8. 
+
+#### Optimizer
+For optimizer, Adam is better than SGD without any momentum. If Adam fails to converge, we should try Yogi.
+
+#### Batch Size
+The batch size is 32 now. Want to try 64 so the model has more sample to train during forward pass and Backpropagation ? We will do the experiment now (2024-10-30).
+
+### Larger Datasize & Data Augmentation
+Can we reduce our losses during training by introducing a larger datasize ?
+If we have that, is data augmentation nessary ? 
+
 ### Parameter Initialization
 
+### Batch Normalization
+
+### Early Stopping Rule
+
 ## Inference and Result
-The experiment results are below:
+The images are (120, 160). The experiment results are below:
 
 1. The result below in colab was acquired after training 10 epoch, the metrics are `28.7 psnr`, `0.818 ssim`, the val `l1 loss` is `0.025`, almost converge when we reach 9 epochs. The example images from inference are [here](images/model_2024-10-29). Run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
 
