@@ -64,8 +64,11 @@ We use cosine scheduler for the project. The scheduler is used for CV mainly. Th
 Thanks to Takao, according to the [article](https://research.nvidia.com/sites/default/files/pubs/2017-03_Loss-Functions-for/NN_ImgProc.pdf), `the mix` is better and will generate a `slightly higer psnr and ssim`. The paper claims it will do a better job to preserve edges as well. So we will implement the mix [here](). More details can be found at [Denoisers](https://github.com/MeridianInnovation/Denoisers).
 
 ### Hyperameters
+The batch size is either 32 or 64. The optimizer is Adam. The learning rate is 1e-2.
 
 ### Larger Datasize & Data Augmentation
+Can we reduce our losses during training by introducing a larger datasize ?
+If we have that, is data augmentation nessary ? 
 
 ### Parameter Initialization
 
