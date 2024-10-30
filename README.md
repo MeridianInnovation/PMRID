@@ -41,6 +41,9 @@ The project has two versions. One is the model developed in tensorflow (.py file
 ### Dataset
 We use FLIR dataset and find it [here](https://drive.google.com/file/d/1XFL-vH2puregx8_ApuYVxDrQLzHE9RTQ/view?usp=drive_link). The trainning set has around 110,000 pairs of images (70%). The validation set has around 11,000 pairs of images (7%). The testing set has around 37,000 pairs of images (23%). You can use a reducer script [here](https://github.com/danielliu-meridian/image-processing/blob/main/scripts/image_dataset_reducer.py) to reduce the size of dataset by 2, 4 or 8. You can find a dataset with reducer size 8 [here](https://drive.google.com/file/d/1kWvuOn_u4gQKIUjpKU4fzdPZWWEntJzH/view?usp=sharing).
 
+### Initial normalization
+Before the model takes in the input image, we use pytorch's transform to convert the image into tensor. We also convert the data range from (0, 255) into (0, 1). We do this becuase we want better convergence. So after the training, when model returns the output, `please remember to rescale the data back to (0, 255) before output the image`
+
 ## Training
 There are two ways to train the model. One is locally, another is colab.
 
@@ -50,6 +53,11 @@ There are two ways to train the model. One is locally, another is colab.
 ```
 python -m src.train.train_torch
 ```
+
+### Learning rate Scheduler
+We use cosine scheduler for the project. The scheduler is used for CV mainly.
+
+### Parameter Initialization
 
 ## Inference and Result
 The experiment results are below:
