@@ -52,25 +52,13 @@ python -m src.train.train_torch
 ```
 
 ## Inference and Result
+The experiment results are below:
 
-Run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
+1. The result below in colab was acquired after training 10 epoch, the metrics are `28.7 psnr`, `0.818 ssim`, the val `l1 loss` is `0.025`, almost converge when we reach 9 epochs. The example images from inference are [here](images/model_2024-10-29). Run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
 
-The result below in colab was acquired after training 10 epoch, the metrics are `28.7 psnr`, `0.818 ssim`, the val `l1 loss` is `0.025`, almost converge when we reach 9 epochs. 
-
-<div style="display: flex; justify-content: space-between;">
-    <div style="text-align: center;">
-        <p><strong>Degraded</strong></p>
-        <img src="images/model_2024-10-29/flir_noisy_image_example_degraded.png" alt="Image Degraded" width="200"/>
-    </div>
-    <div style="text-align: center;">
-        <p><strong>Restored</strong></p>
-        <img src="images/model_2024-10-29/flir_noisy_image_example_restored.png" alt="Image Restored" width="200"/>
-    </div>
-        <div style="text-align: center;">
-        <p><strong>Original</strong></p>
-        <img src="images/model_2024-10-29/flir_noisy_image_example_original.png" alt="Image Original" width="200"/>
-    </div>
-</div>
+| **Image Degraded** | **Image Restored** | **Image Original** |
+|:-----------:|:-----------:|:-----------:|
+| ![Image Degraded](images/model_2024-10-29/flir_noisy_image_example_degraded.png) | ![Image Restored](images/model_2024-10-29/flir_noisy_image_example_restored.png) | ![Image Original](images/model_2024-10-29/flir_noisy_image_example_original.png) |
 
 ## References
 [1] [Practical Deep Raw Image Denoising on Mobile Devices - Paper](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
