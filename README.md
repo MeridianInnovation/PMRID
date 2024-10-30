@@ -7,6 +7,7 @@ We use .ipynb in colab to perform computation (inference and occasionally traini
   - [Preparation](#preparation)
   - [Training](#training)
   - [Inference](#inference-and-result)
+  - [Improvement](#improvement)
   - [References](#references)
 
 ## Preparation
@@ -54,10 +55,20 @@ There are two ways to train the model. One is locally, another is colab.
 python -m src.train.train_torch
 ```
 
+## Improvement
+
 ### Learning rate Scheduler
 We use cosine scheduler for the project. The scheduler is used for CV mainly. The implementation is [here](src/utils/scheduler_torch.py).
 
+### Hyperameters
+
+### Larger Datasize & Data Augmentation
+
 ### Parameter Initialization
+
+### Batch Normalization
+
+### Early Stopping Rule
 
 ## Inference and Result
 The experiment results are below:
