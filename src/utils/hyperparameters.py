@@ -2,6 +2,8 @@
 import yaml
 import os
 
+# This can be used by both pytorch and tensorflow
+
 # Define a class to store hyperparameters
 # This class will be used to store hyperparameters for the training process
 class Hyperparameters:

@@ -22,4 +22,14 @@
   - Reason: adam is faster than sgd.
 - Changed from tf model to pytorch model
   - Reason: l1 loss is 0.08895214647054672 for validation set after one epoch.
-  - Reason: valid PSNR 67.20069885253906 SSIM 0.9997662828617746
+  - Reason: valid PSNR 67.20069885253906 SSIM 0.9997662828617746 (this is wrong)
+
+## 2024-10-28
+- Changed `batch_size` to 32
+- Changed `learning_rate` to 1e-3
+- unchanged `num_epochs` to 10
+  - Reason: converge when we reach 8 epochs.
+- Changed 'optimizer' to adam
+- Changed from tf model to pytorch model
+  - Reason: l1 loss is 0.02518274448812008 for validation set after 9 epoch.
+  - Reason: valid PSNR 28.686108567979602 SSIM 0.8178515990870782
