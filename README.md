@@ -60,15 +60,15 @@ The result below in colab was acquired after training 10 epoch, the metrics are 
 <div style="display: flex; justify-content: space-between;">
     <div style="text-align: center;">
         <p><strong>Degraded</strong></p>
-        <img src="images/model_2024-10-29/flir_noisy_image_example_degraded.png" alt="Image 2" width="300"/>
+        <img src="images/model_2024-10-29/flir_noisy_image_example_degraded.png" alt="Image 2" width="200"/>
     </div>
     <div style="text-align: center;">
         <p><strong>Restored</strong></p>
-        <img src="images/model_2024-10-29/flir_noisy_image_example_restored.png" alt="Image 3" width="300"/>
+        <img src="images/model_2024-10-29/flir_noisy_image_example_restored.png" alt="Image 3" width="200"/>
     </div>
         <div style="text-align: center;">
         <p><strong>Original</strong></p>
-        <img src="images/model_2024-10-29/flir_noisy_image_example_original.png" alt="Image 3" width="300"/>
+        <img src="images/model_2024-10-29/flir_noisy_image_example_original.png" alt="Image 3" width="200"/>
     </div>
 </div>
 
