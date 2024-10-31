@@ -88,7 +88,7 @@ If we have that, is data augmentation nessary ?
 ## Inference and Result
 The images are (120, 160). The experiment results are below:
 
-1. The result below in colab was acquired after training 10 epoch, the metrics are `28.7 psnr`, `0.818 ssim`, the val `l1 loss` is `0.025`, almost converge when we reach 9 epochs. The example images from inference are [here](images/model_2024-10-29). Run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
+1. The result below in colab was acquired after training 10 epoch, the metrics are `28.7 psnr`, `0.818 ssim`, the val `l1 loss` is `0.02518`, almost converge when we reach 9 epochs. The example images from inference are [here](images/model_2024-10-29). Run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
 
 | **Image Degraded** | **Image Restored** | **Image Original** |
 |:-----------:|:-----------:|:-----------:|
