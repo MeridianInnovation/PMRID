@@ -64,7 +64,7 @@ We use cosine scheduler for the project. The scheduler is used for CV mainly. Th
 Thanks to Takao, according to the [article](https://research.nvidia.com/sites/default/files/pubs/2017-03_Loss-Functions-for/NN_ImgProc.pdf), `the mix` is better and will generate a `slightly higer psnr and ssim`. The paper claims it will do a better job to preserve edges as well. So we will implement the mix [here](). More details can be found at [Denoisers](https://github.com/MeridianInnovation/Denoisers).
 
 ### Hyperameters
-The batch size is either 32 or 64. The optimizer is `Adam`. The learning rate is `1e-2`.
+The batch size is `32` or 64. The optimizer is `Adam`. The learning rate is `1e-2`.
 
 #### Learning rate
 For learning rate, based on our experiments, when reaching convergence, it is too slow to converge if lr is 1e-5. It is OK to have a constant learing rate as 1e-3 (a little bit slow but OK), but it will converge after epoch 8. 
@@ -73,7 +73,7 @@ For learning rate, based on our experiments, when reaching convergence, it is to
 For optimizer, Adam is better than SGD without any momentum. If Adam fails to converge, we should try Yogi.
 
 #### Batch Size
-The batch size is 32 now. Want to try 64 so the model has more sample to train during forward pass and Backpropagation ? We will do the experiment now (2024-10-30).
+ `We will choose batch size as 32.` According to [article](https://wandb.ai/ayush-thakur/dl-question-bank/reports/What-s-the-Optimal-Batch-Size-to-Train-a-Neural-Network---VmlldzoyMDkyNDU), when increase the batch size, the time taken will decrease but the error rate will increase. In our [experiment](images/batch_size_experiment/) for one epoch, the time taken for batch size 64 is 20:52, the time for 32 is 21:27, so no much difference.
 
 ### Larger Datasize & Data Augmentation
 Can we reduce our losses during training by introducing a larger datasize ?
@@ -88,7 +88,7 @@ If we have that, is data augmentation nessary ?
 ## Inference and Result
 The images are (120, 160). The experiment results are below:
 
-1. The result below in colab was acquired after training 10 epoch, the metrics are `28.7 psnr`, `0.818 ssim`, the val `l1 loss` is `0.02518`, almost converge when we reach 9 epochs. The example images from inference are [here](images/model_2024-10-29). Run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
+1. The result below in colab was acquired after training 10 epoch, the metrics are `28.68 psnr`, `0.8179 ssim`, the val `l1 loss` is `0.02518`, almost converge when we reach 9 epochs. The example images from inference are [here](images/model_2024-10-29). Run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
 
 | **Image Degraded** | **Image Restored** | **Image Original** |
 |:-----------:|:-----------:|:-----------:|

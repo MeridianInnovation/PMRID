@@ -315,7 +315,7 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
 
 if __name__ == "__main__":
     # Change the hyperpar ameters file name to the one you want to use
-    hyperparams = Hyperparameters('hyperparameters_1030_1_batch_test.yaml')
+    hyperparams = Hyperparameters('hyperparameters_1031_0_lr_0.01_epoch_5.yaml')
 
     # Call the train function with the parsed arguments
     train(
