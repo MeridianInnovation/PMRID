@@ -67,7 +67,7 @@ Thanks to Takao, according to the [article](https://research.nvidia.com/sites/de
 The batch size is `32` or 64. The optimizer is `Adam`. The learning rate is `1e-2`.
 
 #### Learning rate
-For learning rate, based on our experiments, when reaching convergence, it is too slow to converge if lr is 1e-5. It is OK to have a constant learing rate as 1e-3 (a little bit slow but OK), but it will converge after epoch 8. 
+Based on our experiments, when reaching convergence, it is too slow to converge if lr is 1e-5. It is OK to have a constant learing rate as 1e-3 (a little bit slow but OK), but it will converge after epoch 8. So we will use 1e-2 because it is faster, and when we use learning rate scheduler to decrease the lr gradually, it will not end up too slow (thats will happen if you use a constant of 1e-3).
 
 #### Optimizer
 For optimizer, Adam is better than SGD without any momentum. If Adam fails to converge, we should try Yogi.
@@ -80,6 +80,7 @@ Can we reduce our losses during training by introducing a larger datasize ?
 If we have that, is data augmentation nessary ? 
 
 ### Parameter Initialization
+Do we use HE Initialization or Savir Initialization ?
 
 ### Batch Normalization
 
