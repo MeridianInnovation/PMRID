@@ -6,7 +6,7 @@ import datetime
 import pytz
 from utils.utils import ssim_loss
 
-from utils.hyperparameters import Hyperparameters
+from src.utils.hyperparameters_torch import Hyperparameters
 
 # Define the train function
 def train(epochs, lr, gpu, checkpoints_folder, batch_size, optimizer_name, momentum=0.0):
