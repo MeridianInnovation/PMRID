@@ -16,7 +16,7 @@ import pytz
 # ??? need to check
 from src.utils.utils_torch import loss_fn_f1 as loss_fn
 from torch.utils.tensorboard import SummaryWriter
-from src.utils.hyperparameters import Hyperparameters
+from src.utils.hyperparameters_torch import Hyperparameters
 import torch_optimizer as optim
 from src.utils.utils_torch import calculate_psnr_metric, calculate_ssim_metric
 import matplotlib.pyplot as plt
@@ -306,11 +306,12 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
     # Print how long the training took
     print('Training took:', datetime.datetime.now(hkt) - timestamp)
 
-    # plot the history
-    plot_history({'loss': train_loss_history, 'val_loss': val_loss_history})
-
     # Save the final model entirely
     save_entire_model(model, timestamp, epoch_number)
+
+    # plot the history
+    # you need to save the model first
+    plot_history({'loss': train_loss_history, 'val_loss': val_loss_history})
 
 
 if __name__ == "__main__":
