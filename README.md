@@ -38,6 +38,8 @@ The project has two versions. One is the model developed in tensorflow (.py file
 └── tests # test cases
 ```
 
+`Note: for hyperparameters, configs folder is messy, try to organize in logs folder`
+
 
 ### Dataset
 We use FLIR dataset and find it [here](https://drive.google.com/file/d/1XFL-vH2puregx8_ApuYVxDrQLzHE9RTQ/view?usp=drive_link). The trainning set has around 110,000 pairs of images (70%). The validation set has around 11,000 pairs of images (7%). The testing set has around 37,000 pairs of images (23%). You can use a reducer script [here](https://github.com/danielliu-meridian/image-processing/blob/main/scripts/image_dataset_reducer.py) to reduce the size of dataset by 2, 4 or 8. You can find a dataset with reducer size 8 [here](https://drive.google.com/file/d/1kWvuOn_u4gQKIUjpKU4fzdPZWWEntJzH/view?usp=sharing).
@@ -67,7 +69,7 @@ Thanks to Takao, according to the [article](https://research.nvidia.com/sites/de
 The batch size is `32` or 64. The optimizer is `Adam`. The learning rate is `1e-2`.
 
 #### Learning rate
-Based on our experiments, when reaching convergence, it is too slow to converge if lr is 1e-5. It is OK to have a constant learing rate as 1e-3 (a little bit slow but OK), but it will converge after epoch 8. So we will use 1e-2 because it is faster, and when we use learning rate scheduler to decrease the lr gradually, it will not end up too slow (thats will happen if you use a constant of 1e-3).
+Based on our experiments, when reaching convergence, it is too slow to converge if lr is 1e-4. It is OK to have a constant learing rate as 1e-3 (a little bit slow but OK), but it will converge after epoch 8. So we will use 1e-2 because it is faster, and when we use learning rate scheduler to decrease the lr gradually, it will not end up too slow (thats will happen if you use a constant of 1e-3).
 
 #### Optimizer
 For optimizer, Adam is better than SGD without any momentum. If Adam fails to converge, we should try Yogi.
@@ -76,7 +78,8 @@ For optimizer, Adam is better than SGD without any momentum. If Adam fails to co
  `We will choose batch size as 32.` According to [article](https://wandb.ai/ayush-thakur/dl-question-bank/reports/What-s-the-Optimal-Batch-Size-to-Train-a-Neural-Network---VmlldzoyMDkyNDU), when increase the batch size, the time taken will decrease but the error rate will increase. In our [experiment](images/batch_size_experiment/) for one epoch, the time taken for batch size 64 is 20:52, the time for 32 is 21:27, so no much difference.
 
 ### Larger Datasize & Data Augmentation
-Can we reduce our losses during training by introducing a larger datasize ?
+According to [answer](https://stats.stackexchange.com/questions/31249/what-impact-does-increasing-the-training-data-have-on-the-overall-system-accurac). more data is usually better, We want to double the size of dataset first to see if the result improve, if it improves, we will use the original dataset.
+
 If we have that, is data augmentation nessary ? 
 
 ### Parameter Initialization
@@ -89,7 +92,7 @@ Do we use HE Initialization or Savir Initialization ?
 ## Inference and Result
 The images are (120, 160). The experiment results are below:
 
-1. The result below in colab was acquired after training 10 epoch, the metrics are `28.68 psnr`, `0.8179 ssim`, the val `l1 loss` is `0.02518`, almost converge when we reach 9 epochs. The example images from inference are [here](images/model_2024-10-29). Run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
+1. The result below in colab was acquired after training 10 epoch, the metrics are `28.68 psnr`, `0.8179 ssim`, the val `l1 loss` is `0.02518`, almost converge when we reach 9 epochs. The example images from inference are [here](images/model_2024-10-29). The curve of losses is here (`we didnt draw the curve, we will draw it now, and try to train on colab if not too heavy`). Inference run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
 
 | **Image Degraded** | **Image Restored** | **Image Original** |
 |:-----------:|:-----------:|:-----------:|

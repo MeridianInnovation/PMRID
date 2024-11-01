@@ -33,3 +33,22 @@
 - Changed from tf model to pytorch model
   - Reason: l1 loss is 0.02518274448812008 for validation set after 9 epoch.
   - Reason: valid PSNR 28.686108567979602 SSIM 0.8178515990870782
+
+## 2024-10-31
+- Remained `batch_size` to 32
+- Changed `learning_rate` to 1e-2
+  Reason: 1e-3 was too low to converge in the later stage of lr scheduler.
+- Remained `num_epochs` to 10
+- Remained 'optimizer' to adam
+  - Result: l1 loss is 0.024405116215348244 for validation set after 10 epoch.
+  - Almost converge, but not yet after 10 epochs
+  - Result: valid PSNR 28.910198381212023 SSIM 0.8250506943335141
+
+## 2024-11-01
+- Remained `batch_size` to 32
+- Remained `learning_rate` to 1e-2
+- Changed `num_epochs` to 20
+  - Reason: yesterday's model did not converge after 10 epochs, try 20 to see where converge to change the scheduler max update.
+- Remained 'optimizer' to adam
+  - Result: l1 loss is ? for validation set after ? epoch.
+  - Result: valid PSNR ? SSIM ?
