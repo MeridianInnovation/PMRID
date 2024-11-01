@@ -66,10 +66,11 @@ We use cosine scheduler for the project. The scheduler is used for CV mainly. Th
 Thanks to Takao, according to the [article](https://research.nvidia.com/sites/default/files/pubs/2017-03_Loss-Functions-for/NN_ImgProc.pdf), `the mix` is better and will generate a `slightly higer psnr and ssim`. The paper claims it will do a better job to preserve edges as well. So we will implement the mix [here](). More details can be found at [Denoisers](https://github.com/MeridianInnovation/Denoisers).
 
 ### Hyperameters
-The batch size is `32` or 64. The optimizer is `Adam`. The learning rate is `1e-2`.
+The batch size is `32` or 64. The optimizer is `Adam`. The learning rate is `1e-3`.
 
 #### Learning rate
-Based on our experiments, when reaching convergence, it is too slow to converge if lr is 1e-4. It is OK to have a constant learing rate as 1e-3 (a little bit slow but OK), but it will converge after epoch 8. So we will use 1e-2 because it is faster, and when we use learning rate scheduler to decrease the lr gradually, it will not end up too slow (thats will happen if you use a constant of 1e-3).
+Based on our experiments, when reaching convergence, it is too slow to converge if lr is 1e-4. It is OK to have a constant learing rate as 1e-3 (a little bit slow but OK), but it will converge after epoch 8 with constant lr scheduler. We initially want to use 1e-2 because it is faster, but experiment [here](images/faild_experiments/faild_lr_0.01_batch_size_32_loss_spike.png) sees a sudden spike in loss during the last few batches of the first epoch, although the model trains smoothly during the first few batches.
+So to make training more smoothly, we use lr = 1e-3. When we use 1e-3, the l1 loss after the first epoch is around 0.02962, when we use lr= 1e-2, the loss is around 0.02688.
 
 #### Optimizer
 For optimizer, Adam is better than SGD without any momentum. If Adam fails to converge, we should try Yogi.
@@ -82,12 +83,13 @@ According to [answer](https://stats.stackexchange.com/questions/31249/what-impac
 
 If we have that, is data augmentation nessary ? 
 
-### Parameter Initialization
-Do we use HE Initialization or Savir Initialization ?
-
 ### Batch Normalization
+As mentioned above in lr section, a spike in loss happened when lr = 0.01, if the problem still exists after we change lr to 1e-3, we consider batch normalization. BatchNom normalizes the outputs of a layer for each mini-batch, reduce the variation a little bit, and reduce the likelyhood of a spike in loss
 
 ### Early Stopping Rule
+
+### Parameter Initialization
+Pytorch uses HE Initialization automatically for conv followed by ReLU
 
 ## Inference and Result
 The images are (120, 160). The experiment results are below:
