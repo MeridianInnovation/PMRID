@@ -31,8 +31,10 @@ class CosineScheduler:
         return self.base_lr
     
 if __name__ == '__main__':
-  num_epochs = 10
-  scheduler = CosineScheduler(max_update=5, base_lr=1e-3, final_lr=1e-5)
+  num_epochs = 20
+  base_lr = 1e-3
+  final_lr = base_lr * 0.01
+  scheduler = CosineScheduler(max_update=num_epochs, base_lr=base_lr, final_lr=final_lr)
   d2l.plot(torch.arange(num_epochs), [scheduler(t) for t in range(num_epochs)])
 
   # Show the plot

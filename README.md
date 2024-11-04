@@ -60,7 +60,9 @@ python -m src.train.train_torch
 ## Improvement
 
 ### Learning rate Scheduler
-We use cosine scheduler for the project. The scheduler is used for CV mainly. The implementation is [here](src/utils/scheduler_torch.py). We will change our scheduler parameters based on our experiment 2 and the curve [here](images/losses_curves/batch_size_32_lr_0.001_cosine_lr.png). The val loss almost converges after 13 epochs, so we will set max_update to 13. The final lr is still 0.01 * intial lr (We may change final lr to 0.0003520365877844011 because this is the lr in e13, )
+We use cosine scheduler for the project. The scheduler is used for CV mainly. The implementation is [here](src/utils/scheduler_torch.py). We will change our scheduler parameters based on our experiment 2 and the curve [here](images/losses_curves/batch_size_32_lr_0.001_cosine_lr.png). The val loss almost converges after 13 epochs, so we will set max_update to 13. The final lr is changed to 0.0003520365877844011 because this is the lr after e13. The [loss curve](images/losses_curves/batch_size_32_lr_0.001_differ_cosine_lr.png) of experiment 3 shows that the training is not smooth enough. So we choose the consine scheduler in experiment 2. The example lr schedule is below. `The max_update is set to the number of epochs. The final_lr is set to initial_lr * 0.01.`
+
+<img src="images/others/cosine_lr_20_max_1e-5_final.png" alt="Cosine scheduler" width="500" />
 
 ### Loss function
 Thanks to Takao, according to the [article](https://research.nvidia.com/sites/default/files/pubs/2017-03_Loss-Functions-for/NN_ImgProc.pdf), `the mix` is better and will generate a `slightly higer psnr and ssim`. The paper claims it will do a better job to preserve edges as well. So we will implement the mix [here](). More details can be found at [Denoisers](https://github.com/MeridianInnovation/Denoisers).
@@ -69,7 +71,7 @@ Thanks to Takao, according to the [article](https://research.nvidia.com/sites/de
 The batch size is `32` or 64. The optimizer is `Adam`. The learning rate is `1e-3`.
 
 #### Learning rate
-Based on our experiments, when reaching convergence, it is too slow to converge if lr is 1e-4. It is OK to have a constant learing rate as 1e-3 (a little bit slow but OK), but it will converge after epoch 8 with constant lr scheduler. We initially want to use 1e-2 because it is faster, but experiment [here](images/faild_experiments/faild_lr_0.01_batch_size_32_loss_spike.png) sees a sudden spike in loss during the last few batches of the first epoch, although the model trains smoothly during the first few batches.
+Based on our experiments, when reaching convergence, it is too slow to converge if lr is 1e-4. It is OK to have a constant learing rate as 1e-3 (a little bit slow but OK), but it will converge after epoch 8 with constant lr scheduler. We initially want to use 1e-2 because it is faster, but experiment [here](images/faild_experiments/faild_lr_0.01_batch_size_32_loss_spike.png) sees a `sudden spike in loss` during the last few batches of the first epoch, although the model trains smoothly during the first few batches.
 So to make training more smoothly, we use lr = 1e-3. When we use 1e-3, the l1 loss after the first epoch is around 0.02962, when we use lr= 1e-2, the loss is around 0.02688.
 
 #### Optimizer
@@ -92,6 +94,7 @@ As mentioned above in lr section, a spike in loss happened when lr = 0.01, if th
 Pytorch uses HE Initialization automatically for conv followed by ReLU
 
 ## Inference and Result
+### Result
 The images are (120, 160). The experiment results are below:
 
 1. The result below in colab was acquired after training 10 epoch (lr=1e-3, batch_size=32, const lr), the metrics are `28.68 psnr`, `0.8179 ssim`, the val `l1 loss` is `0.02518`, almost converge when we reach 9 epochs. The example images from inference are [here](images/model_2024-10-29). The curve of losses is here (`we didnt draw the curve, we will draw it now, and try to train on colab if not too heavy`). Inference run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1MJnoV_RLyxyodpH9mvuWu7paNOIbbbd9?usp=sharing)
@@ -105,6 +108,18 @@ The images are (120, 160). The experiment results are below:
 | **Image Degraded** | **Image Restored** | **Image Original** |
 |:-----------:|:-----------:|:-----------:|
 | ![Image Degraded](images/model_2024-11-01/flir_noisy_image_example_degraded.png) | ![Image Restored](images/model_2024-11-01/flir_noisy_image_example_restored.png) | ![Image Original](images/model_2024-11-01/flir_noisy_image_example_original.png) |
+
+3. The result below in colab was acquired after training 20 epoch (lr=1e-3, b=32, cosine scheduler with max_update = 13 and final lr = 0.0003), the metrics are `28.75 psnr`, `0.8199 ssim`, the val `l1 loss` is `0.02490`, almost converge when we reach 11 epochs. The curve of losses is [here](images/losses_curves/batch_size_32_lr_0.001_differ_cosine_lr.png). We do not run inference because the result is not as good as experiment 2. Also based on the curve, experiment 3 does not train the model as smoothly as experiment 2. 
+
+
+### Comparision
+We compare our model with barakeel's model. What I refer is the barakeel's 16 KB TFLite model that is being used in Android app. More information can be found [here](https://github.com/MeridianInnovation/Denoisers?tab=readme-ov-file#loss-function). We run inference on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/14BaJAaGEKntvW479wdvg5Dz3_Ftc7NuW?usp=sharing). We use our own eyes to determine if our model is at least as good as the barakeel's.
+
+| **Image Degraded** | **Image Restored** | **Image Original** |
+|:-----------:|:-----------:|:-----------:|
+| ![Image Degraded](images/barakeel_62_80/flir_noisy_image_example_degraded.png) | ![Image Restored](images/barakeel_62_80/flir_noisy_image_example_restored.png) | ![Image Original](images/barakeel_62_80//flir_noisy_image_example_original.png) |
+
+`Note: the result from barakeel's model is not good maybe due to different resolutions ? The model takes in 62 by 80. So we resize the noisy image from 120 by 160 to that shape first. Then the model returns a 62 by 80. So we rescale the output image to 120 by 160. Or maybe because we do not know the data range takened into the model ? We dont do initial normolization here (maybe not because initial normolization, run experiment already) `
 
 ## References
 [1] [Practical Deep Raw Image Denoising on Mobile Devices - Paper](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
