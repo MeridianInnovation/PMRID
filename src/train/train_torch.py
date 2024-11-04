@@ -205,7 +205,12 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
     
     # Define the scheduler
     # Define the hyperparameters for the scheduler basd on previous experiments
-    scheduler = CosineScheduler(max_update=epochs, base_lr=lr, final_lr=lr * 0.01)
+    # final_lr and max_update are updated based on the experiments
+    # final_lr = lr * 0.01
+    final_lr = 0.0003
+    # max_update = epochs
+    max_update = 13
+    scheduler = CosineScheduler(max_update=max_update, base_lr=lr, final_lr=final_lr)
 
     # Define the root path for the dataset
     root_dir = 'data'
@@ -316,7 +321,7 @@ def train(epochs, lr, checkpoints_folder, batch_size, optimizer_name, momentum=0
 
 if __name__ == "__main__":
     # Change the hyperpar ameters file name to the one you want to use
-    hyperparams = Hyperparameters('hyperparameters_1101_1_lr_0.001_epoch_20.yaml')
+    hyperparams = Hyperparameters('hyperparameters_1104_0_lr_0.001_epoch_20.yaml')
 
     # Call the train function with the parsed arguments
     train(

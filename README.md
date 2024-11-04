@@ -100,11 +100,11 @@ The images are (120, 160). The experiment results are below:
 |:-----------:|:-----------:|:-----------:|
 | ![Image Degraded](images/model_2024-10-29/flir_noisy_image_example_degraded.png) | ![Image Restored](images/model_2024-10-29/flir_noisy_image_example_restored.png) | ![Image Original](images/model_2024-10-29/flir_noisy_image_example_original.png) |
 
-2. The result below in colab was acquired after training 20 epoch (lr=1e-3, b=32, cosine scheduler without max_update iters), the metrics are `28.76 psnr`, `0.8206 ssim`, the val `l1 loss` is `0.02483`, almost converge when we reach 13 epochs. The example images from inference are [here](images/model_2024-10-29). The curve of losses is [here](images/losses_curves/batch_size_32_lr_0.001_cosine_lr.png). Inference run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1gkd4dcO-OAi05k8sttePvRzh_cILM1wV?usp=sharing) (Hasn't finished updating yet)
+2. The result below in colab was acquired after training 20 epoch (lr=1e-3, b=32, cosine scheduler without changing max_update and final lr), the metrics are `28.76 psnr`, `0.8206 ssim`, the val `l1 loss` is `0.02483`, almost converge when we reach 13 epochs. The example images from inference are [here](images/model_2024-11-01/). The curve of losses is [here](images/losses_curves/batch_size_32_lr_0.001_cosine_lr.png). Inference run on [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1gkd4dcO-OAi05k8sttePvRzh_cILM1wV?usp=sharing)
 
 | **Image Degraded** | **Image Restored** | **Image Original** |
 |:-----------:|:-----------:|:-----------:|
-| ![Image Degraded](images/model_2024-10-29/flir_noisy_image_example_degraded.png) | ![Image Restored](images/model_2024-10-29/flir_noisy_image_example_restored.png) | ![Image Original](images/model_2024-10-29/flir_noisy_image_example_original.png) |
+| ![Image Degraded](images/model_2024-11-01/flir_noisy_image_example_degraded.png) | ![Image Restored](images/model_2024-11-01/flir_noisy_image_example_restored.png) | ![Image Original](images/model_2024-11-01/flir_noisy_image_example_original.png) |
 
 ## References
 [1] [Practical Deep Raw Image Denoising on Mobile Devices - Paper](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123510001.pdf).
